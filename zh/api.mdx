@@ -1,0 +1,47 @@
+---
+title: "API 使用方式"
+description: "通过统一的 HTTPS 接口调用 AI 模型"
+---
+
+## 基本请求
+
+所有请求都应通过 HTTPS 发送，并使用 Bearer Token 认证：
+
+```http
+Authorization: Bearer sk-your-key
+Content-Type: application/json
+```
+
+### Chat Completions
+
+```bash
+curl https://api.aibal.ai/v1/chat/completions \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"your-model","messages":[{"role":"user","content":"写一段产品介绍"}],"temperature":0.7}'
+```
+
+响应通常包含 `id`、`model`、`choices` 和 `usage`。流式请求可设置 `stream: true`，客户端需要按 SSE 事件逐段读取内容。
+
+## Python 示例
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-your-key",
+    base_url="https://api.aibal.ai/v1",
+)
+response = client.chat.completions.create(
+    model="your-model",
+    messages=[{"role": "user", "content": "你好"}],
+)
+print(response.choices[0].message.content)
+```
+
+## 稳定性建议
+
+- 为每次业务请求记录自己的 trace ID，并关联平台返回的请求 ID。
+- 对 `408`、`429` 和暂时性 `5xx` 使用带抖动的指数退避。
+- 设置客户端连接和读取超时，避免请求长期占用工作线程。
+- 对非幂等业务避免盲目重试，必要时使用业务侧去重键。

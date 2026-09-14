@@ -3,18 +3,39 @@
   "theme": "mint",
   "name": "aibal.ai",
   "colors": {
-    "primary": "#0F766E",
-    "light": "#14B8A6",
-    "dark": "#0F172A"
+    "primary": "#0D9488",
+    "light": "#5EEAD4",
+    "dark": "#042F2E"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "pages": [
       {
-        "group": "Getting Started",
+        "group": "中文使用指南",
         "pages": [
-          "index",
-          "quickstart"
+          "zh/index",
+          "zh/quickstart",
+          "zh/features",
+          "zh/api",
+          "zh/security-billing"
+        ]
+      },
+      {
+        "group": "English Guide",
+        "pages": [
+          "en/index",
+          "en/quickstart",
+          "en/api",
+          "en/security"
+        ]
+      },
+      {
+        "group": "Руководство на русском",
+        "pages": [
+          "ru/index",
+          "ru/quickstart",
+          "ru/api",
+          "ru/security"
         ]
       }
     ],

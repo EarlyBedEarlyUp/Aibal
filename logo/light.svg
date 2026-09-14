@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="651" height="240" viewBox="19 10 651 240">
+<svg xmlns="http://www.w3.org/2000/svg" width="651" height="210" viewBox="19 20 651 210">
   <defs>
     <linearGradient id="tile-gradient" x1="8" y1="7" x2="60" y2="61" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#14B8A6"/>
-      <stop offset="1" stop-color="#0F766E"/>
+      <stop stop-color="#5EEAD4"/>
+      <stop offset="1" stop-color="#0D9488"/>
     </linearGradient>
   </defs>
   <g transform="translate(38 28) scale(3)">
@@ -14,6 +14,6 @@
     <path d="m51 10 1.4 3.6L56 15l-3.6 1.4L51 20l-1.4-3.6L46 15l3.6-1.4L51 10Z" fill="#67E8F9" transform="translate(-0.4 0.7)"/>
   </g>
   <text x="275" y="165" font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="112" font-weight="800" letter-spacing="0">
-    <tspan fill="#0F766E">ai</tspan><tspan fill="#0F172A">bal</tspan><tspan fill="#14B8A6">.ai</tspan>
+    <tspan fill="#0D9488">ai</tspan><tspan fill="#042F2E">bal</tspan><tspan fill="#0D9488">.ai</tspan>
   </text>
 </svg>

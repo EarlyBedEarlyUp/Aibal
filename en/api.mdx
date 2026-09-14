@@ -1,0 +1,48 @@
+---
+title: "API usage"
+description: "Build with a stable, OpenAI-compatible interface"
+---
+
+## Base URL
+
+Use the following base URL for API requests:
+
+```text
+https://aibal.ai/v1
+```
+
+Authenticate with a project key in the `Authorization` header:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Chat completions
+
+```bash
+curl https://aibal.ai/v1/chat/completions \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"your-model-id","messages":[{"role":"user","content":"Summarize this text."}]}'
+```
+
+The response follows the familiar `choices`, `message`, and `usage` structure. Use `usage` to estimate tokens and monitor project costs.
+
+## Model selection
+
+The `model` value is the identifier shown in your dashboard. Model availability, context limits, pricing, and capabilities can vary by workspace. Treat the dashboard as the source of truth.
+
+## Streaming
+
+For clients that support streaming, add `"stream": true` and process server-sent events as they arrive. Streaming improves perceived latency for long responses; standard requests are easier to log and retry.
+
+## Practical guidance
+
+- Set request timeouts and retry only safe, transient failures.
+- Log request IDs and latency, but redact prompts that contain sensitive data.
+- Use different keys for each service so you can revoke access without a full outage.
+- Validate user input and cap output length before forwarding requests.
+
+## Groups and budgets
+
+Use workspace groups to separate products, environments, or customers. Assign keys to the appropriate group and configure limits where available. Review usage regularly and pause a key when an unexpected pattern appears.

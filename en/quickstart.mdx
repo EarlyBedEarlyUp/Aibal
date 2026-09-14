@@ -1,0 +1,60 @@
+---
+title: "Quickstart"
+description: "Create a key and send your first request"
+---
+
+## Before you begin
+
+You need an aibal.ai account, an enabled model, and a project key. Keep the key private and load it from an environment variable.
+
+<Steps>
+  <Step title="Open the dashboard">
+    Sign in at [aibal.ai](https://aibal.ai), open your workspace, and select **API Keys**.
+  </Step>
+  <Step title="Create a project key">
+    Give the key a descriptive name such as `demo-web` or `production-api`. Copy it immediately and store it in your secret manager.
+  </Step>
+  <Step title="Choose a model">
+    Open **Models** and select a model available to your workspace. Copy its model identifier exactly.
+  </Step>
+  <Step title="Send a request">
+    Set the key in your shell and call the chat completion endpoint.
+
+    ```bash
+    export AIBAL_API_KEY="your-key"
+    curl https://aibal.ai/v1/chat/completions \
+      -H "Authorization: Bearer $AIBAL_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "model": "your-model-id",
+        "messages": [{"role": "user", "content": "Hello from aibal.ai"}]
+      }'
+    ```
+  </Step>
+</Steps>
+
+## Use an OpenAI-compatible client
+
+Most OpenAI SDKs only need a base URL and an API key. Keep the rest of your application code unchanged.
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="your-key",
+    base_url="https://aibal.ai/v1",
+)
+response = client.chat.completions.create(
+    model="your-model-id",
+    messages=[{"role": "user", "content": "Give me a one-line greeting."}],
+)
+print(response.choices[0].message.content)
+```
+
+## Next steps
+
+Create separate keys for development and production, set sensible spending limits, and review usage after your first successful call. See [API usage](/en/api) for request options and troubleshooting.
+
+<Tip>
+  Never commit a key to source control or paste it into a browser bundle. Rotate it from **API Keys** if you suspect exposure.
+</Tip>

@@ -1,0 +1,52 @@
+---
+title: "Быстрый старт"
+description: "Создайте ключ и отправьте первый запрос"
+---
+
+## Перед началом
+
+Вам нужны аккаунт aibal.ai, доступная модель и ключ проекта. Храните ключ в переменной окружения или менеджере секретов.
+
+<Steps>
+  <Step title="Откройте панель">
+    Войдите на [aibal.ai](https://aibal.ai), откройте рабочее пространство и выберите **API Keys**.
+  </Step>
+  <Step title="Создайте ключ проекта">
+    Укажите понятное имя, например `demo-web` или `production-api`. Скопируйте ключ сразу и сохраните его в менеджере секретов.
+  </Step>
+  <Step title="Выберите модель">
+    В разделе **Models** выберите модель, доступную вашему рабочему пространству, и скопируйте её идентификатор.
+  </Step>
+  <Step title="Отправьте запрос">
+    Задайте ключ в оболочке и вызовите endpoint чата.
+
+    ```bash
+    export AIBAL_API_KEY="your-key"
+    curl https://aibal.ai/v1/chat/completions \
+      -H "Authorization: Bearer $AIBAL_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"model":"your-model-id","messages":[{"role":"user","content":"Hello from aibal.ai"}]}'
+    ```
+  </Step>
+</Steps>
+
+## OpenAI-совместимый клиент
+
+Большинству SDK OpenAI нужны только базовый URL и ключ.
+
+```python
+from openai import OpenAI
+
+client = OpenAI(api_key="your-key", base_url="https://aibal.ai/v1")
+response = client.chat.completions.create(
+    model="your-model-id",
+    messages=[{"role": "user", "content": "Give me a one-line greeting."}],
+)
+print(response.choices[0].message.content)
+```
+
+## Следующие шаги
+
+Создайте отдельные ключи для разработки и production, задайте лимиты и проверьте использование после первого успешного вызова. Подробности приведены в разделе [Использование API](/ru/api).
+
+<Tip>Никогда не добавляйте ключ в репозиторий или браузерный код. При утечке сразу отзовите его в разделе **API Keys**.</Tip>

@@ -1,0 +1,24 @@
+---
+title: "Security, keys, and billing"
+description: "Operate your workspace with clear access and spending controls"
+---
+
+## Protect API keys
+
+Treat every key as a password. Store it in a server-side secret manager, use environment variables locally, and rotate it when a teammate leaves or a log may contain it. Do not place keys in mobile apps, browser JavaScript, public repositories, screenshots, or support tickets.
+
+## Least-privilege access
+
+Give each application its own key and group. Start with the smallest model and spending scope that meets the requirement. Revoke unused keys and review workspace members periodically.
+
+## Billing and usage
+
+Usage depends on the selected model and the amount of input and output processed. Check the dashboard before production rollout, set a budget appropriate for the project, and monitor sudden increases. A request can be technically successful while still consuming more tokens than expected, so inspect usage data alongside application metrics.
+
+## Responsible troubleshooting
+
+When a request fails, record the timestamp, endpoint, model identifier, HTTP status, and request ID. Remove credentials and personal data before sharing logs. Retry after correcting authentication, model access, or request format; avoid blind retry loops.
+
+<Warning>
+  If a key is exposed, revoke it immediately and create a replacement. Assume that a public key has been copied even if you remove it later.
+</Warning>
