@@ -12,34 +12,19 @@
     "dark": "/favicon.svg"
   },
   "navigation": {
-    "pages": [
+    "languages": [
       {
-        "group": "中文使用指南",
-        "pages": [
-          "zh/index",
-          "zh/quickstart",
-          "zh/features",
-          "zh/api",
-          "zh/security-billing"
-        ]
+        "language": "zh",
+        "default": true,
+        "href": "/zh"
       },
       {
-        "group": "English Guide",
-        "pages": [
-          "en/index",
-          "en/quickstart",
-          "en/api",
-          "en/security"
-        ]
+        "language": "en",
+        "href": "/en"
       },
       {
-        "group": "Руководство на русском",
-        "pages": [
-          "ru/index",
-          "ru/quickstart",
-          "ru/api",
-          "ru/security"
-        ]
+        "language": "ru",
+        "href": "/ru"
       }
     ],
     "global": {
