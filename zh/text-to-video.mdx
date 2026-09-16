@@ -1,0 +1,31 @@
+---
+title: "文生视频"
+description: "在线创建视频，或通过异步 API 提交视频任务"
+---
+
+## 在线
+
+登录后打开 **文生视频** 或 **Video Studio** 页面，按页面顺序选择 API Key、模型、分辨率、画幅和时长，填写提示词后提交任务。
+
+当前项目的视频任务是异步处理：提交后先得到任务状态，页面会自动刷新或允许你手动查看历史任务。生成时间、可用模型、分辨率、时长和费用以页面当前选项为准。
+
+建议先使用短提示词和较低规格验证流程，再提交更长时长或更高分辨率的任务。任务失败时先查看错误信息和余额，不要连续重复提交。
+
+## API
+
+项目对外提供异步视频任务接口。典型流程是：创建任务、保存任务标识、轮询任务状态、在成功后读取结果地址。
+
+```bash
+curl https://aibal.ai/api/v3/contents/generations/tasks \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "seedance-2",
+    "content": [{"type": "text", "text": "一只猫在雨后的城市街道慢慢行走"}],
+    "ratio": "16:9",
+    "duration": 4,
+    "watermark": false
+  }'
+```
+
+返回的任务状态和字段以当前接口响应为准。不要把 API Key 写入浏览器脚本或提交到代码仓库。

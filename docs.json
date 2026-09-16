@@ -16,30 +16,64 @@
       {
         "language": "zh",
         "default": true,
-        "href": "/zh"
+        "groups": [
+          {
+            "group": "使用指南",
+            "pages": [
+              "zh/selling-points",
+              "zh/register",
+              "zh/recharge",
+              "zh/create-api-key",
+              {
+                "group": "文生视频",
+                "pages": ["zh/text-to-video"]
+              },
+              {
+                "group": "文生图",
+                "pages": ["zh/text-to-image"]
+              },
+              "zh/integrations"
+            ]
+          }
+        ]
       },
       {
         "language": "en",
-        "href": "/en"
+        "groups": [
+          {
+            "group": "User guide",
+            "pages": [
+              "en/selling-points",
+              "en/register",
+              "en/recharge",
+              "en/create-api-key",
+              {"group": "Text to video", "pages": ["en/text-to-video"]},
+              {"group": "Text to image", "pages": ["en/text-to-image"]},
+              "en/integrations"
+            ]
+          }
+        ]
       },
       {
         "language": "ru",
-        "href": "/ru"
+        "groups": [
+          {
+            "group": "Руководство пользователя",
+            "pages": [
+              "ru/selling-points",
+              "ru/register",
+              "ru/recharge",
+              "ru/create-api-key",
+              {"group": "Текст в видео", "pages": ["ru/text-to-video"]},
+              {"group": "Текст в изображение", "pages": ["ru/text-to-image"]},
+              "ru/integrations"
+            ]
+          }
+        ]
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
+      "anchors": []
     }
   },
   "logo": {
@@ -49,14 +83,14 @@
   "navbar": {
     "links": [
       {
-        "label": "aibal.ai 控制台",
+        "label": "打开 aibal.ai 控制台",
         "href": "https://aibal.ai"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "进入控制台",
+      "href": "https://aibal.ai"
     }
   },
   "contextual": {

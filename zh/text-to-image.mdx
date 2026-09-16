@@ -1,0 +1,32 @@
+---
+title: "文生图"
+description: "在线生成图片，或通过兼容接口接入图像工作流"
+---
+
+## 在线
+
+登录后打开 **文生图** 或 **Image Studio** 页面，输入提示词，选择当前可用模型、尺寸和输出数量，然后提交生成。生成结果可以在页面查看或下载，实际选项以页面显示为准。
+
+先用短提示词验证模型和计费，再逐步增加风格、构图、主体和负面约束。图片任务的费用可能与尺寸、数量和模型有关。
+
+## API
+
+无参考图时使用 OpenAI 兼容的图片生成接口：
+
+```bash
+curl https://aibal.ai/v1/images/generations \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "YOUR_IMAGE_MODEL",
+    "prompt": "一间被晨光照亮的极简工作室",
+    "size": "1024x1024",
+    "n": 1
+  }'
+```
+
+### 在 Codex 中使用的特殊说明
+
+Codex 更适合通过兼容的图片生成工具或 API 调用创建图片。请将 `https://aibal.ai/v1` 配置为服务地址，并使用专门创建的 API Key；不要把密钥直接写进提示词、项目源码或共享配置。
+
+如果 Codex 所用的客户端只接受固定的图片接口或模型列表，请以客户端的错误信息为准检查路径、模型名称和服务分组。aibal.ai 只对控制台当前开放的模型负责，不保证任意模型名称都可用。
