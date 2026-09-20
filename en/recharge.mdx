@@ -1,8 +1,116 @@
 ---
 title: "Add funds (USDT and redeem codes)"
-description: "Add usable balance to your account"
+description: "Top up with USDT or redeem a code, then verify your account benefits"
 ---
 
-Use the signed-in recharge page to select an available USDT network and amount. Copy the address from the current order, confirm the network, and keep the transaction hash until the order is credited.
+Use an available USDT payment method in the dashboard or redeem a code. Account balance pays for usage; a redeem code may add balance, concurrency, or a subscription. Check what your code provides before redeeming it.
 
-For a redeem code, open **Redeem code**, enter the complete code, and submit it once. Network, rate, expiry, and code rules are defined by the current console.
+## Before you start
+
+- [Create an account](/en/register), then sign in to [aibal.ai](https://aibal.ai).
+- For USDT, use a wallet or exchange account that supports the network specified on the payment page. Allow for transfer fees.
+- Have the complete redeem code ready. Codes are case-sensitive and can only be used once.
+- Check which account you are signed in to. Do not use a wallet address sent by someone else.
+
+## Top up with USDT
+
+<Frame caption="Recharge amount and current balance (Chinese interface shown)">
+  <img src="/images/recharge-zh.png" alt="aibal.ai recharge page showing the account balance, preset amounts, and custom amount field" />
+</Frame>
+
+<Steps>
+  <Step title="Open the recharge page">
+    Open **Recharge** or **Recharge / Subscription** in the dashboard and select the recharge option, or open the [recharge page](https://aibal.ai/purchase) directly. The navigation label and available features depend on the current site settings.
+
+    Check **Recharge account** and **Current balance** to confirm the intended account.
+  </Step>
+  <Step title="Enter an amount">
+    Select a preset amount or enter a custom amount within the limits shown on the page.
+
+    The recharge amount, payment amount, and credited balance may differ because of currency conversion or fees. Check each amount separately.
+  </Step>
+  <Step title="Select the USDT payment method">
+    Under **Payment method**, select the available USDT option. The screenshot shows **USDT-TRC20**, which uses the TRON network. Always follow the network specified by your current order.
+
+    If USDT is not listed, it is not available for your current account or amount. Adjust the amount or contact support through the site. Do not send funds to an address from an earlier order.
+  </Step>
+  <Step title="Confirm the order and open the payment page">
+    Review the payment amount, fees, and credited balance, then click **Confirm payment**. Follow the prompt to open the payment page. If your browser blocks the new window, allow it to open.
+
+    Before paying, check the order number, currency, network, recipient address, exact amount due, and remaining time. The number entered in the recharge form is not necessarily the final USDT amount due.
+  </Step>
+  <Step title="Transfer according to the order">
+    Copy the address from the current payment page and select exactly the same network in your wallet or exchange. Send the exact amount required, accounting for any fee deducted from the amount received. TRON wallet transfers require TRX for network fees.
+
+    Pay before the order expires and save the order number and transaction hash (TxID). Do not pay the same order twice or send funds to an expired order.
+  </Step>
+  <Step title="Return to confirm the credit">
+    After transferring, return to the payment page and wait for its status to update. Open [My orders](https://aibal.ai/orders) to check the order.
+
+    Verify that the order is **Completed** and your account balance has updated. A successful wallet transfer alone does not confirm that aibal.ai has credited your account.
+  </Step>
+</Steps>
+
+<Frame caption="USDT-TRC20 payment option and transfer reminders (Chinese interface shown)">
+  <img src="/images/recharge-usdt-zh.png" alt="USDT-TRC20 payment method with exact amount and network fee reminders" />
+</Frame>
+
+### Understand the payment details
+
+| Detail | What to check |
+| --- | --- |
+| Recharge account | You are paying into the intended account |
+| Payment amount / Actual payment | The currency and amount due, including any fees |
+| Credited balance | The usable balance added after completion, as shown on the page |
+| Network and address | The wallet network matches the order, and the address comes from the current payment page |
+| Order expiry | Do not continue paying after the countdown ends |
+| Order number / TxID | Keep these for payment inquiries; your wallet private key is never needed |
+
+## Redeem a code
+
+<Frame caption="Redeem code input and account benefits (Chinese interface shown)">
+  <img src="/images/redeem-zh.png" alt="aibal.ai redeem page with an empty code field and current balance and concurrency" />
+</Frame>
+
+<Steps>
+  <Step title="Open the redeem page">
+    Select **Redeem** in the dashboard to open the [redeem page](https://aibal.ai/redeem). It displays your current balance and concurrency.
+  </Step>
+  <Step title="Enter the complete code">
+    Paste the code into **Redeem code**. Preserve the original letter case and check for missing characters or extra spaces.
+  </Step>
+  <Step title="Submit the code">
+    Click **Redeem** and wait for the result. Do not click repeatedly or try the same code in another account at the same time.
+  </Step>
+  <Step title="Check the benefits received">
+    After the success message, check whether the code added balance, concurrency, or a subscription. Verify the entry under **Recent activity**.
+
+    For a subscription, check its group and validity period. Subscription and concurrency codes do not necessarily increase your account balance.
+  </Step>
+</Steps>
+
+## After adding funds
+
+Follow [Create an API key](/en/create-api-key) to select a suitable group for your tool. If you already have a key, continue to [Try it in your browser](/en/web-quickstart) or the [Integration overview](/en/integrations). Current models, prices, groups, and subscription limits are shown in the dashboard.
+
+## Troubleshooting
+
+### I sent USDT, but my balance has not updated
+
+Check the network, address, and amount received, then open **My orders**. Blockchain confirmation and account crediting can take time. If the status remains unchanged, use the support contact shown on the site and provide the order number, TxID, network, amount, and payment time. Do not send another transfer.
+
+### Can I pay an expired order?
+
+Do not use the old order. If you have not paid, create a new order and follow its payment page. If you have already paid, keep the transaction record and contact support. Do not pay again.
+
+### Redemption succeeded, but my balance did not increase
+
+Check whether the code provided concurrency or a subscription. If redemption succeeded but account information could not refresh, reload the page and check **Recent activity**. Do not redeem again or publish the code.
+
+### My code is invalid or already used
+
+Check letter case and completeness, and whether you already redeemed it in this or another account. If the issue persists, contact the code provider or site support. Do not post the complete code in a public chat.
+
+<Warning>
+Blockchain transfers are irreversible. An incorrect network, address, or amount can result in lost funds. This guide does not provide a fixed wallet address, exchange rate, minimum amount, or crediting time: follow the current order. Never share your wallet seed phrase, private key, or account password when resolving a recharge issue.
+</Warning>

@@ -1,6 +1,99 @@
 ---
 title: "Create an API key"
-description: "Create separate keys for each workflow"
+description: "Choose a group, set usage limits, and securely save a separate key for your client"
 ---
 
-Open **API Keys**, create a descriptive key, choose its group, models, quota, and expiry, then copy it immediately into a secret manager. Treat the key like a password and revoke it if it may have leaked.
+An API key authenticates your client's requests to aibal.ai. Create a separate key for each tool or application so you can track usage, adjust limits, and disable access independently.
+
+## Before you start
+
+- [Create an account and sign in](/en/register).
+- Confirm that your account has access to the group you need, with sufficient balance or a valid subscription. [Add funds](/en/recharge) if needed.
+- Choose a clear purpose, such as `codex-work`, `claude-dev`, or `image-api`. The name helps you identify the key; it does not select a protocol or model.
+
+<Frame caption="Create an API key: name, provider, group, and optional settings (Chinese interface shown)">
+  <img src="/images/create-api-key-zh.png" alt="aibal.ai create key dialog showing name, provider, group, custom key, IP restrictions, and quota fields" />
+</Frame>
+
+## Create a key
+
+<Steps>
+  <Step title="Open the API keys page">
+    Select **API keys** in the dashboard, or open the [keys page](https://aibal.ai/keys) directly. Click **Create key**.
+  </Step>
+  <Step title="Enter a descriptive name">
+    Enter a recognizable name in **Name**. Use different names for different clients so you can find the right key later.
+  </Step>
+  <Step title="Choose a provider and group">
+    Select a **Provider**, then choose an available service **Group**. Read its description and billing multiplier to confirm that it supports your intended models and connection method.
+
+    You must select a group. Models are selected later in your client or request, not in this dialog. A provider may be unavailable if your account has no accessible groups for it.
+  </Step>
+  <Step title="Set a quota, expiry, and optional restrictions">
+    For your first key, enter a suitable spending cap under **Quota limit** and enable **Key expiration**. Configure **IP restrictions** if requests should only come from a fixed server.
+
+    Usually, leave **Custom key** disabled and let the system generate the key. See the field reference below for the other settings.
+  </Step>
+  <Step title="Create and copy the key">
+    Review your settings and click **Create**. After the success message, find the key by name in the list and click its copy button.
+
+    The list masks the displayed key, but the copy button copies its complete value. Save it in a password manager, your client's secure credential settings, or a local environment variable.
+  </Step>
+  <Step title="View the connection settings">
+    Click **Use key** on that row to view client settings for the selected group. Enter the API address and key as required by your client; address formats can differ between clients.
+
+    Once configured, make one small request and check **Usage records** and the key's usage. Actual requests may incur charges.
+  </Step>
+</Steps>
+
+## Fields and limits
+
+| Field | Purpose and recommendation |
+| --- | --- |
+| Name | Identifies the purpose; does not determine models or permissions |
+| Provider / Group | Filters and selects service groups; available groups, models, and multipliers are shown in the dashboard |
+| Custom key | Optional; at least 16 characters, using only letters, numbers, underscores, and hyphens. Prefer a system-generated key |
+| IP whitelist | With IP restrictions enabled, enter one IP address or CIDR per line; only listed source addresses are allowed |
+| IP blacklist | Enter one IP address or CIDR per line to block those source addresses |
+| Quota limit | Maximum total spending for this key in USD; 0 means no separate key quota |
+| Rate limits | Spending caps in USD for 5-hour, 1-day, and 7-day windows, not requests per second; 0 means no separate cap for that window |
+| Key expiration | Choose a preset duration or custom expiry; disabling this option leaves the key without an expiry date |
+
+<Note>
+A key quota is not account balance. Setting a 10 USD cap does not add 10 USD to your account. Leaving a key unlimited does not make usage free or remove account, subscription, or group limits. All applicable limits still apply.
+</Note>
+
+## Check and manage your key
+
+- Confirm that its status is **Active**, with the intended group and expiry.
+- Check usage and quota in the list, and individual requests under **Usage records**.
+- Use **Edit key** to change settings. After switching groups, check that the client's model and protocol remain compatible.
+- Use **Disable** to pause access or **Delete key** when it is no longer needed. Deletion cannot be undone, and clients using that key will lose access.
+
+Continue with [cc-switch](/en/cc-switch), [Codex](/en/codex), or [Claude Code](/en/claude-code), or [try it in your browser](/en/web-quickstart).
+
+## Troubleshooting
+
+### No groups are available
+
+Select the intended provider and confirm that your account has access to a matching group or subscription. Do not choose an incompatible group just to continue. If no suitable option is available, contact support through the site.
+
+### Can I copy the key again later?
+
+Yes. Use the copy button in the **API keys** list. The masked text displayed on the page is not a usable key. Do not paste the complete key into a chat or screenshot to inspect it.
+
+### Why do requests fail even though I have account balance?
+
+Check whether the key is disabled, expired, out of quota, or at a window spending limit. Then check the group, model, API address, and IP restrictions. Account balance alone does not guarantee access to a particular group or subscription.
+
+### Requests stopped after I enabled an IP whitelist
+
+Use the public outbound IP address of the requesting device or server, not its private local address, commonly beginning with `192.168` or `10`. A VPN, proxy, or mobile network may change the outbound IP. Confirm your network setup before configuring the whitelist.
+
+### What should I do if a key leaks?
+
+Immediately disable or delete the old key, create a replacement, and update every client that used it. Review recent usage for unexpected charges. Renaming a key or deleting a screenshot does not revoke exposed credentials.
+
+<Warning>
+Treat API keys like passwords. Keep them out of browser frontend code, public repositories, logs, screenshots, and group chats. Do not send a complete key to support. Server applications should read keys from secure configuration or environment variables.
+</Warning>

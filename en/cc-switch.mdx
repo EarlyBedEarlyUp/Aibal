@@ -1,4 +1,114 @@
 ---
 title: "cc-switch"
-description: "Connect aibal.ai to cc-switch"
+description: "Add and switch aibal.ai providers for Codex or Claude Code in CC Switch"
 ---
+
+CC Switch manages provider configurations for coding tools. It is not a model service and does not replace installing Codex or Claude Code. This guide configures the two tools separately; choose the one you need.
+
+## Before you start
+
+- [Create an API Key](/en/create-api-key) with the correct group and model for your tool.
+- Download an installer for your operating system and CPU architecture from [official CC Switch Releases](https://github.com/farion1231/cc-switch/releases), then follow its installation instructions.
+- Install [Codex CLI](/en/codex) or [Claude Code](/en/claude-code).
+
+On first launch, preserve or import existing configurations before making changes. Button names and positions can vary by CC Switch version.
+
+## Add an aibal.ai provider
+
+<Steps>
+  <Step title="Choose the target application">
+    Open CC Switch and select **Codex** or **Claude Code** in the application selector. Use an application-specific provider so each tool keeps its own settings.
+  </Step>
+  <Step title="Open the add-provider form">
+    Click **+** / **Add provider** at the top right, choose an **application-specific provider**, then **Custom**. Name it `aibal.ai - Codex` or `aibal.ai - Claude Code`.
+  </Step>
+  <Step title="Enter the client configuration">
+    Use the **Codex configuration** or **Claude Code configuration** below. If the console's **Use Key** provides a dedicated endpoint, use that address. The two clients use different base addresses; do not copy one directly into the other.
+  </Step>
+  <Step title="Save and enable">
+    Click **Add**, return to the main screen, and click **Enable** on your new provider. Close the old client session and launch the target CLI again so it reads the new configuration.
+  </Step>
+  <Step title="Verify the first request">
+    Ask the tool: “Reply only Connection successful. Do not read or edit files or run commands.” Check the matching key, model and time in aibal.ai **Usage** afterward. Saving a configuration does not verify a call, and test messages may incur charges.
+  </Step>
+</Steps>
+
+## Codex configuration
+
+With **Codex** selected, enter these values in the form or configuration editor:
+
+| Field | Value |
+| --- | --- |
+| Name | `aibal.ai - Codex` |
+| API Key | Your aibal.ai key for the current group |
+| Base URL / endpoint | `https://aibal.ai/v1` |
+| Model | Full available text model ID from the console |
+| Protocol | `responses` |
+
+If your version offers **auth.json** and **config.toml** editors, use the paired examples below. Replace the key and model placeholders, and save them only in your local CC Switch installation.
+
+`auth.json`:
+
+```json
+{
+  "OPENAI_API_KEY": "YOUR_AIBAL_API_KEY"
+}
+```
+
+`config.toml`:
+
+```toml
+model_provider = "aibal"
+model = "YOUR_AVAILABLE_MODEL_ID"
+
+[model_providers.aibal]
+name = "aibal.ai"
+base_url = "https://aibal.ai/v1"
+wire_api = "responses"
+requires_openai_auth = true
+supports_websockets = false
+```
+
+This uses the `auth.json` key method from the official CC Switch guide, so `requires_openai_auth = true`. Do not also add `env_key` from our [manual Codex guide](/en/codex), which uses a different authentication method. If your group requires a model catalog file, complete that setup under **Use Key** as well.
+
+## Claude Code configuration
+
+Select **Claude Code**, name the provider `aibal.ai - Claude Code`, and enter this in the custom configuration editor:
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://aibal.ai",
+    "ANTHROPIC_AUTH_TOKEN": "YOUR_AIBAL_API_KEY",
+    "ANTHROPIC_MODEL": "YOUR_AVAILABLE_CLAUDE_MODEL_ID"
+  }
+}
+```
+
+Replace both placeholders with your aibal.ai key and a Claude model supported by its group. This address does not include `/v1`. Start Claude Code and run `/status` to check the gateway address and credential source.
+
+## Switching and restoring providers
+
+Find the provider under the relevant application, click **Enable**, and start a new session. Codex and Claude Code have separate configurations; switching one does not switch the other.
+
+To restore your previous service, enable its saved provider. To return to an official account, select the **Official login** preset and follow that client's sign-in flow. Do not delete all settings as a recovery method.
+
+## Common questions
+
+### It still uses the old provider
+
+Check the selected application, confirm the provider is enabled, and restart the client. Environment variables or CC Switch common settings may override provider values. Keep future edits in one place.
+
+### The model list is empty or discovery fails
+
+Available models depend on the key's group. Check the key and address, or enter the full model ID shown in **Use Key** manually. Do not substitute a model name from another provider.
+
+### Why do Codex and Claude Code use different addresses?
+
+The clients build request paths differently. Codex uses a base address with `/v1` in this guide, while Claude Code uses the site root. An extra or missing path component can cause `404`.
+
+### Can I share exported settings?
+
+Provider configurations and backups may contain real API Keys. Do not publish them in repositories, chats or untrusted sync storage. Share only templates with keys replaced; disable an exposed key immediately.
+
+For connection errors, see [Integration overview](/en/integrations). For CC Switch features and current UI details, see its [official user manual](https://github.com/farion1231/cc-switch/blob/main/docs/user-manual/zh/README.md).

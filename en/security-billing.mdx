@@ -1,20 +1,24 @@
 ---
-title: "Security, keys, and billing"
-description: "Operate your workspace with clear access and spending controls"
+title: "Key security and usage checks"
+description: "Protect your keys, top up correctly and review request charges"
 ---
 
-## Protect API keys
+Use recognizable API Key names for different tools, with quotas and expiration dates as needed. Current account pages determine prices and top-up conditions.
 
-Treat every key as a password. Store it in a server-side secret manager, use environment variables locally, and rotate it when a teammate leaves or a log may contain it. Do not place keys in mobile apps, browser JavaScript, public repositories, screenshots, or support tickets.
+## Related guides
 
-## Least-privilege access
+<Card title="Create and manage API Keys" href="/en/create-api-key">
+  Learn about key creation, quota settings and common access issues.
+</Card>
 
-Give each application its own key and group. Start with the smallest model and spending scope that meets the requirement. Revoke unused keys and review workspace members periodically.
+<Card title="Top up your account" href="/en/recharge">
+  Follow the USDT or redemption-code workflow and verify the credited amount.
+</Card>
 
-## Billing and usage
+## Check requests and charges
 
-Usage depends on the selected model and the amount of input and output processed. Check the dashboard before production rollout, set a budget appropriate for the project, and monitor sudden increases. Actual prices and discounts follow the current account page and service terms.
+Open console [usage records](https://aibal.ai/usage) and compare the time, model and Key with your requests. If usage looks unexpected, disable the relevant Key, keep request IDs, task IDs and redacted errors, and contact support. A network timeout does not prove that no task or charge was created; do not retry blindly.
 
-## Responsible troubleshooting
-
-When a request fails, check the request ID, model availability, key permissions, and current balance before retrying. Avoid logging full API keys or sensitive prompts.
+<Note>
+Keep passwords, verification codes, API Keys and full payment details private. Disable and replace an exposed Key. Redact logs and screenshots before sharing.
+</Note>

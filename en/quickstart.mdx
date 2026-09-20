@@ -1,60 +1,28 @@
 ---
-title: "Quickstart"
-description: "Create a key and send your first request"
+title: "Getting started"
+description: "Register, top up, create a key and try the web app"
 ---
 
-## Before you begin
+For your first visit, follow this sequence, choose the group and models available to your account, and complete a generation in the web app.
 
-You need an aibal.ai account, an enabled model, and a project key. Keep the key private and load it from an environment variable.
+## Complete your first experience
 
-<Steps>
-  <Step title="Open the dashboard">
-    Sign in at [aibal.ai](https://aibal.ai), open your workspace, and select **API Keys**.
-  </Step>
-  <Step title="Create a project key">
-    Give the key a descriptive name such as `demo-web` or `production-api`. Copy it immediately and store it in your secret manager.
-  </Step>
-  <Step title="Choose a model">
-    Open **Models** and select a model available to your workspace. Copy its model identifier exactly.
-  </Step>
-  <Step title="Send a request">
-    Set the key in your shell and call the chat completion endpoint.
+<Card title="1. Register an account" href="/en/register">
+  Create your aibal.ai account and sign in.
+</Card>
 
-    ```bash
-    export AIBAL_API_KEY="your-key"
-    curl https://aibal.ai/v1/chat/completions \
-      -H "Authorization: Bearer $AIBAL_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{
-        "model": "your-model-id",
-        "messages": [{"role": "user", "content": "Hello from aibal.ai"}]
-      }'
-    ```
-  </Step>
-</Steps>
+<Card title="2. Top up your account" href="/en/recharge">
+  Learn the USDT and redemption-code methods and confirm the credited amount.
+</Card>
 
-## Use an OpenAI-compatible client
+<Card title="3. Create an API Key" href="/en/create-api-key">
+  Create a dedicated Key and check its group, quota and expiration.
+</Card>
 
-Most OpenAI SDKs only need a base URL and an API key. Keep the rest of your application code unchanged.
+<Card title="4. Try the web app" href="/en/web-quickstart">
+  Generate an image, download it and review usage.
+</Card>
 
-```python
-from openai import OpenAI
-
-client = OpenAI(
-    api_key="your-key",
-    base_url="https://aibal.ai/v1",
-)
-response = client.chat.completions.create(
-    model="your-model-id",
-    messages=[{"role": "user", "content": "Give me a one-line greeting."}],
-)
-print(response.choices[0].message.content)
-```
-
-## Next steps
-
-Create separate keys for development and production, set sensible spending limits, and review usage after your first successful call. See [API usage](/en/api) for request options and troubleshooting.
-
-<Tip>
-  Never commit a key to source control or paste it into a browser bundle. Rotate it from **API Keys** if you suspect exposure.
-</Tip>
+<Note>
+Web and client requests may incur charges. Check current console models and prices. If a request's outcome is uncertain, review usage before retrying.
+</Note>

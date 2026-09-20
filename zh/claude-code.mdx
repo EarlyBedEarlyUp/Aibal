@@ -1,4 +1,104 @@
 ---
 title: "Claude Code"
-description: "将 aibal.ai 接入 Claude Code"
+description: "安装 Claude Code，通过 aibal.ai 的密钥与网关地址完成终端接入"
 ---
+
+本页介绍 Claude Code CLI 的接入。你将配置服务地址、API Key 和可用 Claude 模型，在终端中完成第一次对话。
+
+## 操作前准备
+
+- 已[创建 API Key](/zh/create-api-key)，选择支持 Claude Code 的服务分组，确认当前可用 Claude 模型与余额。
+- 准备一个可供 Claude Code 使用的项目目录。第一次验证可使用空目录。
+- 确认电脑满足 [Claude Code 官方系统要求](https://code.claude.com/docs/en/setup)。
+
+## 配置步骤
+
+<Steps>
+  <Step title="安装 Claude Code">
+    macOS、Linux 或 WSL 在终端执行官方安装命令：
+
+    ```bash
+    curl -fsSL https://claude.ai/install.sh | bash
+    ```
+
+    Windows PowerShell：
+
+    ```powershell
+    irm https://claude.ai/install.ps1 | iex
+    ```
+
+    安装后执行 `claude --version`。若无法识别命令，重新打开终端，并按安装器提示检查 `PATH`。
+  </Step>
+  <Step title="确认密钥对应的配置">
+    登录 [aibal.ai](https://aibal.ai/)，在 API 密钥列表打开 **使用密钥**。选择 Claude Code 和你的操作系统，确认地址与支持的完整 Claude 模型 ID。下面的 `YOUR_AVAILABLE_CLAUDE_MODEL_ID` 必须替换。
+  </Step>
+  <Step title="设置地址、密钥和模型">
+    在 Bash 或 Zsh 中执行，按提示隐藏输入 API Key：
+
+    ```bash
+    export ANTHROPIC_BASE_URL="https://aibal.ai"
+    export ANTHROPIC_AUTH_TOKEN="$(bash -c 'read -r -s -p "aibal.ai API Key: " key; printf "\n" >&2; printf "%s" "$key"')"
+    export ANTHROPIC_MODEL="YOUR_AVAILABLE_CLAUDE_MODEL_ID"
+    ```
+
+    Windows PowerShell：
+
+    ```powershell
+    $env:ANTHROPIC_BASE_URL = "https://aibal.ai"
+    $credential = Get-Credential -UserName "aibal" -Message "Paste your aibal.ai API Key in the password field"
+    $env:ANTHROPIC_AUTH_TOKEN = $credential.GetNetworkCredential().Password
+    Remove-Variable credential
+    $env:ANTHROPIC_MODEL = "YOUR_AVAILABLE_CLAUDE_MODEL_ID"
+    ```
+
+    不要给此处的基础地址追加 `/v1/messages`。若 **使用密钥** 为当前分组提供专用路径，使用控制台给出的完整基础地址。
+  </Step>
+  <Step title="启动并检查当前连接">
+    在同一个终端进入项目目录，执行 `claude`。按提示完成初次设置，在交互界面输入 `/status`，核对 **Anthropic base URL** 指向 aibal.ai，凭证来源为 `ANTHROPIC_AUTH_TOKEN`。
+  </Step>
+  <Step title="发送第一次消息">
+    输入：
+
+    ```text
+    只回复“连接成功”，不要读取或修改文件，不要执行命令。
+    ```
+
+    收到回答后，在 aibal.ai 的 **使用记录** 中核对本次模型、时间与消耗。测试消息也可能计费；正式编码前先确认账户和密钥额度。
+  </Step>
+</Steps>
+
+## 三个环境变量分别做什么
+
+| 环境变量 | 作用 |
+| --- | --- |
+| `ANTHROPIC_BASE_URL` | 网关基础地址，常用值为 `https://aibal.ai` |
+| `ANTHROPIC_AUTH_TOKEN` | aibal.ai API Key，通过 Bearer 方式发送 |
+| `ANTHROPIC_MODEL` | 当前分组可用的完整 Claude 模型 ID |
+
+本教程先使用当前终端的临时变量。以后每次打开新终端需要重新设置；希望通过界面保存并切换配置时，可使用 [cc-switch](/zh/cc-switch)。不要把真实密钥写入会提交到 Git 的项目配置。
+
+## 常见问题
+
+### 还是要求使用原来的账户登录
+
+先在 `/status` 中确认地址和凭证来源。只设置地址没有设置密钥，不能完成本教程的接入。检查已有 `ANTHROPIC_API_KEY`、`apiKeyHelper` 或设置文件是否造成冲突；保留本次需要的凭证来源后重新启动。
+
+### 已经设置变量，但 VS Code 或桌面应用不生效
+
+终端变量仅传给该终端启动的子进程。本页是 CLI 教程，VS Code 扩展和桌面应用有各自配置入口；请按 [Claude Code 官方网关连接说明](https://code.claude.com/docs/en/llm-gateway-connect)配置对应客户端。
+
+### 默认模型能用，但切换模型或子任务失败
+
+不同模型可能需要不同分组权限。不要假设默认 Sonnet、Opus 或 Haiku 别名都可用，先使用控制台明确提供的模型 ID；涉及模型映射时以 **使用密钥** 提供的配置为准。
+
+### 返回 401、404、429 或额度错误
+
+分别检查密钥完整性、地址是否多了一层 `/v1`、并发/速率限制及账户或密钥额度。不要连续重试会产生费用的任务；更多处理见[接入概览](/zh/integrations)。
+
+## 密钥安全与下一步
+
+不要向模型发送真实密钥，也不要把包含密钥的终端或配置文件截图发给他人。发生泄露时，先在控制台停用旧密钥，再创建新密钥更新配置。
+
+接入成功后可给 Claude Code 一个范围清楚的小任务，例如解释某个文件。让工具修改项目之前，先确认项目有备份或版本管理。
+
+参考：[官方安装说明](https://code.claude.com/docs/en/setup)、[官方网关连接说明](https://code.claude.com/docs/en/llm-gateway-connect)。

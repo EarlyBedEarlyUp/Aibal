@@ -1,4 +1,118 @@
 ---
 title: "Codex"
-description: "Connect aibal.ai to Codex"
+description: "Install Codex CLI, configure aibal.ai as a provider, and verify your first request"
 ---
+
+This guide configures a custom provider in Codex CLI so terminal coding requests go through aibal.ai. For a graphical configuration manager, see [cc-switch](/en/cc-switch).
+
+## Before you start
+
+- [Create an API Key](/en/create-api-key) in a group with a Responses-compatible text model and available balance or quota.
+- Prepare a project folder you allow Codex to read. You can use an empty folder for the first test.
+- Install a supported Node.js and npm version for the npm method below. See the [official Codex installation guide](https://developers.openai.com/codex/cli) for alternatives.
+
+## Set up Codex
+
+<Steps>
+  <Step title="Install and check the command">
+    Run:
+
+    ```bash
+    npm install -g @openai/codex
+    codex --version
+    ```
+
+    Continue once a version number appears. If the command is not found, reopen your terminal and check that npm's global command directory is in `PATH`.
+  </Step>
+  <Step title="Prepare your key and model ID">
+    Sign in to [aibal.ai](https://aibal.ai/), open **Use Key** in the API Key list, and select Codex. Copy a text model ID supported by the current group. Replace `YOUR_AVAILABLE_MODEL_ID` below; it is only a placeholder.
+  </Step>
+  <Step title="Edit your user-level config.toml">
+    Open `~/.codex/config.toml`, or `%USERPROFILE%\.codex\config.toml` on native Windows. If you set `CODEX_HOME`, use the file in that directory. Create the directory and file if absent; otherwise back up the file and merge these fields.
+
+    ```toml
+    model_provider = "aibal"
+    model = "YOUR_AVAILABLE_MODEL_ID"
+
+    [model_providers.aibal]
+    name = "aibal.ai"
+    base_url = "https://aibal.ai/v1"
+    env_key = "AIBAL_API_KEY"
+    wire_api = "responses"
+    requires_openai_auth = false
+    supports_websockets = false
+    ```
+
+    Place the top-level `model_provider` and `model` fields before the first `[table]`. Do not duplicate existing fields or `[model_providers.aibal]`. Keep your other settings. Provider settings belong in your user-level file, not the project's `.codex/config.toml`.
+  </Step>
+  <Step title="Set the key in your launch terminal">
+    Use hidden input to keep the key out of command history. In Bash or Zsh, run this command and paste the key when prompted; characters will not appear:
+
+    ```bash
+    export AIBAL_API_KEY="$(bash -c 'read -r -s -p "aibal.ai API Key: " key; printf "\n" >&2; printf "%s" "$key"')"
+    ```
+
+    In Windows PowerShell:
+
+    ```powershell
+    $credential = Get-Credential -UserName "aibal" -Message "Paste your aibal.ai API Key in the password field"
+    $env:AIBAL_API_KEY = $credential.GetNetworkCredential().Password
+    Remove-Variable credential
+    ```
+
+    This variable applies to this terminal and processes launched from it. Set it again after closing the terminal, or inject it through a trusted secret manager. Never store the real key in project files.
+  </Step>
+  <Step title="Start a new session and verify">
+    Run `codex` in your prepared project folder. Confirm the project trust scope when prompted, then send:
+
+    ```text
+    Reply only "Connection successful". Do not read or edit files or run commands.
+    ```
+
+    After a normal answer, check the timestamp, key and model in aibal.ai **Usage**. A test request may incur charges.
+  </Step>
+</Steps>
+
+## Configuration fields
+
+| Field | Meaning |
+| --- | --- |
+| `model_provider` | Selects the `aibal` provider defined below |
+| `model` | Full text model ID allowed by your key |
+| `base_url` | API base address, commonly `https://aibal.ai/v1` |
+| `env_key` | Variable name `AIBAL_API_KEY`, not the key itself |
+| `wire_api` | Codex protocol; use `responses` |
+| `requires_openai_auth` | `false` for this environment-key setup |
+| `supports_websockets` | `false` for the HTTP/SSE setup in this example |
+
+<Note>
+If the console provides a model catalog file or group-specific address, also save that file as instructed in **Use Key** and use the supplied path and model ID. Do not mix settings from different groups.
+</Note>
+
+## Common questions
+
+### AIBAL_API_KEY is missing
+
+Start `codex` from the terminal where you set the variable. Programs launched from the Dock, Start menu or another terminal may not inherit it. This is a CLI guide; desktop applications may require separate setup.
+
+### I still see ChatGPT login or another provider
+
+Check that `model_provider = "aibal"` is a top-level setting, the user-level file is active, and another configuration manager has not overwritten it. Do not combine this `env_key` method with an `auth.json` method from another guide.
+
+### The model is missing or requests fail
+
+Replace the placeholder with a model ID your key supports. Check Responses support, duplicate `/v1` paths and key quota. See [Integration overview](/en/integrations) for other errors.
+
+### An existing session ignores the new settings
+
+Exit the old Codex process and restart from the correctly configured terminal. If using CC Switch, keep editing the same provider there so manual files and managed settings do not overwrite each other.
+
+### Can I generate images directly from Codex?
+
+Text access does not mean a built-in image tool will automatically use this gateway. If your client supports an image executor, follow the [Codex instructions for text to image](/en/text-to-image), select **API Key Mode** in the console, save the complete matching configuration, and restart the client. Do not mix that configuration with this page's `env_key` snippet. You can also explicitly call the image API and save the result as described there. Image tool availability depends on the client and group. For video, see [Text to video](/en/text-to-video).
+
+## Key security and next steps
+
+Do not expose keys in prompts, screenshots, Git commits or logs. Consider a separate key limit for Codex; disable and replace the key if it is exposed.
+
+Sources: [Official Codex configuration reference](https://developers.openai.com/codex/config-reference) and [custom model providers](https://developers.openai.com/codex/config-advanced). Client interfaces can change between versions.

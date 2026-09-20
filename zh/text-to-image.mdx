@@ -1,32 +1,173 @@
 ---
 title: "文生图（在线使用与 API）"
-description: "在线生成图片，或通过兼容接口接入图像工作流"
+description: "从第一张图片到参考图编辑，了解在线操作、API 调用和 Codex 使用方式"
 ---
 
-## 在线
+你可以在浏览器中输入提示词生成图片，也可以把同一套能力接入自己的程序。已有图片需要修改时，添加参考图即可进入图生图模式。
 
-登录后打开 **文生图** 或 **Image Studio** 页面，输入提示词，选择当前可用模型、尺寸和输出数量，然后提交生成。生成结果可以在页面查看或下载，实际选项以页面显示为准。
+## 操作前准备
 
-先用短提示词验证模型和计费，再逐步增加风格、构图、主体和负面约束。图片任务的费用可能与尺寸、数量和模型有关。
+- 登录 [aibal.ai](https://aibal.ai/login)，准备一个已启用且可调用图片模型的 [API Key](/zh/create-api-key)。
+- 检查账户余额和 API Key 的额度；需要时先[充值](/zh/recharge)。在线生成也会产生调用费用。
+- 参考图只使用你有权上传和处理的素材，不要上传密码、身份证件或其他敏感内容。
 
-## API
+模型、参数可用性和费用以控制台当前展示为准。本页示例使用在线生图页面的 `gpt-image-2`。
 
-无参考图时使用 OpenAI 兼容的图片生成接口：
+## 在线生成图片
+
+<Frame caption="在线生图页面（中文界面；尚未创建 API Key，先完成准备再生成）">
+  <img src="/images/text-to-image-zh.png" alt="在线生图的提示词与参考图区域，以及没有可用 API Key 的提示" />
+</Frame>
+
+<Steps>
+  <Step title="打开在线生图">
+    登录后打开[在线生图](https://aibal.ai/image-studio)，在参数区域选择 **API Key**。如果页面提示没有可用的 Key，点击 **管理 API Key**，创建或启用 Key 后返回。
+  </Step>
+  <Step title="设置图片参数">
+    首次体验保留 **比例与尺寸：自动**、**质量：自动**、**生成数量：1**、**输出格式：PNG**。当前页面中的灰色尺寸不可选，不要把显示出来的尺寸都当作已支持。
+  </Step>
+  <Step title="描述你想要的图片">
+    在 **提示词** 中描述主体、场景、构图和风格。例如：“一只橙色小猫坐在窗边，午后的柔和阳光照在毛发上，背景是模糊的绿色植物，水彩插画风格，无文字。”
+
+    纯文生图不需要添加参考图。
+  </Step>
+  <Step title="提交生成">
+    点击 **生成**，等待任务从 **提交中**、**处理中** 变为 **成功**。生成期间保持页面打开；遇到网络中断时，先查看使用记录，不要立即重复提交。
+  </Step>
+  <Step title="预览并保存结果">
+    在结果卡片中点击 **预览** 检查图片，点击 **下载** 保存。你也可以使用 **复制提示词** 或 **复用参数** 继续调整。
+  </Step>
+</Steps>
+
+<Warning>
+当前在线生图的结果列表属于本次页面会话。离开或刷新页面前，请先下载需要保留的图片；关闭页面也不代表上游生成已经取消。
+</Warning>
+
+### 参数怎么选
+
+<Frame caption="在线生图参数（中文界面；固定尺寸灰显时请保持自动）">
+  <img src="/images/text-to-image-options-zh.png" alt="图片尺寸、质量、数量、输出格式、压缩和背景设置" />
+</Frame>
+
+| 字段 | 使用说明 |
+| --- | --- |
+| **模型** | 当前页面显示 `gpt-image-2`；Key 所属分组仍需允许调用该模型。 |
+| **比例与尺寸** | 当前推荐 **自动**。仅使用页面可选项，固定尺寸灰显时不可用。 |
+| **质量** | 支持自动、低、中、高；首次体验选择自动，再按实际输出调整。 |
+| **生成数量** | 页面提供 1–4 张；首次选择 1 张，增加数量可能增加费用。 |
+| **输出格式** | PNG、JPEG 或 WebP，按你的后续用途选择。 |
+| **压缩设置** | 仅 JPEG / WebP 生效，数值越低，压缩越强；PNG 不使用此项。 |
+| **背景** | 自动或不透明；不要把自动理解为保证输出透明背景。 |
+
+### 使用参考图修改图片
+
+点击 **添加参考图（可选）**，上传 PNG、JPEG 或 WebP。最多 4 张，单张不超过 10MB，合计不超过 40MB。多图时可以 **设为主图**；不需要的图片点击 **移除**。
+
+添加参考图后，提示词改为明确描述修改要求，例如“保留主体与构图，把背景换成浅蓝色”。点击 **生成** 后仍按上面的流程预览和下载。已有生成结果也可以点击 **用作参考图** 继续编辑。
+
+## 通过 API 生成图片
+
+下面的命令需要本机安装 `curl`。请先在本机环境中设置 `AIBAL_API_KEY`，不要把真实 Key 写入文档、共享脚本或代码仓库。以下命令会实际发起生成并可能产生费用。
+
+### 发送文生图请求
 
 ```bash
-curl https://aibal.ai/v1/images/generations \
+curl --fail-with-body https://aibal.ai/v1/images/generations \
   -H "Authorization: Bearer $AIBAL_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "YOUR_IMAGE_MODEL",
-    "prompt": "一间被晨光照亮的极简工作室",
-    "size": "1024x1024",
-    "n": 1
-  }'
+    "model": "gpt-image-2",
+    "prompt": "An orange kitten by a sunny window, watercolor illustration, no text",
+    "n": 1,
+    "output_format": "png",
+    "background": "auto"
+  }' \
+  -o image-response.json
 ```
+
+示例省略 `size` 和 `quality`，与网页的自动选项一致。成功响应的 `data` 数组中，图片可能以 `b64_json` 或 `url` 返回；不要假定一定返回可直接打开的网址。
+
+如果 `data[0].b64_json` 有值，可以用 Python 3 保存第一张 PNG 图片：
+
+```bash
+python3 -c 'import base64,json,pathlib; r=json.loads(pathlib.Path("image-response.json").read_text()); pathlib.Path("image.png").write_bytes(base64.b64decode(r["data"][0]["b64_json"]))'
+```
+
+如果返回 `data[0].url`，打开该地址查看并及时下载。不需要向结果图片的网址转发 aibal.ai 的 API Key。
+
+### 发送参考图编辑请求
+
+把 `/path/to/reference.png` 替换为真实文件路径。编辑接口使用表单上传，不要手动设置 JSON 的 `Content-Type`。
+
+```bash
+curl --fail-with-body https://aibal.ai/v1/images/edits \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -F "image[]=@/path/to/reference.png" \
+  --form-string "model=gpt-image-2" \
+  --form-string "prompt=Keep the subject and replace the background with light blue" \
+  --form-string "n=1" \
+  --form-string "output_format=png" \
+  --form-string "background=auto" \
+  -o image-response.json
+```
+
+需要多张参考图时重复添加 `-F "image[]=@..."`。响应保存方式与文生图一致。
 
 ### 在 Codex 中使用的特殊说明
 
-Codex 更适合通过兼容的图片生成工具或 API 调用创建图片。请将 `https://aibal.ai/v1` 配置为服务地址，并使用专门创建的 API Key；不要把密钥直接写进提示词、项目源码或共享配置。
+#### 使用支持图片执行器的客户端
 
-如果 Codex 所用的客户端只接受固定的图片接口或模型列表，请以客户端的错误信息为准检查路径、模型名称和服务分组。aibal.ai 只对控制台当前开放的模型负责，不保证任意模型名称都可用。
+控制台为 OpenAI 分组的 Key 提供 **兼容模式** 和 **API Key Mode** 两套 Codex 配置。兼容模式保留旧版客户端的配置方式；**API Key Mode** 用于授权支持此功能的客户端图片执行器。
+
+<Steps>
+  <Step title="打开对应 Key 的使用配置">
+    在 aibal.ai 的 API 密钥列表中，找到属于 OpenAI 分组的 Key，点击 **使用密钥**，选择 **Codex CLI**。
+  </Step>
+  <Step title="选择 API Key Mode">
+    在 **Codex 认证模式** 中选择 **API Key Mode**，再选择你的操作系统。只有对应分组和客户端选项会显示此模式。
+  </Step>
+  <Step title="保存完整配套配置">
+    按弹窗说明保存生成的配置；如页面要求模型目录文件，也一并完成。先备份已有配置，不要把这套配置与手动接入的 `env_key` 或兼容模式的 `auth.json` 片段混在一起。复制内容包含真实 Key，请只在本机妥善保存。
+  </Step>
+  <Step title="完全重启并新建任务">
+    保存后完全退出 Codex Desktop 或 CLI，重新打开，再新建一个任务。仅刷新原任务或继续旧会话不足以完成页面要求的重新初始化。
+  </Step>
+</Steps>
+
+此流程适用于具备相应图片执行器的客户端，不代表所有 Codex 版本都会提供内置生图。以你当前客户端显示的可用工具为准；不要仅凭文本对话成功，就认为图片调用已配置完成。
+
+#### 明确调用图片 API
+
+你也可以明确让 Codex 调用上面的 aibal.ai 图片 API，并把结果保存为本地文件。此方式能明确指定请求地址、模型和输出位置，不依赖客户端自动选择内置图片工具。
+
+可以提供这样的任务说明：
+
+```text
+请使用 https://aibal.ai/v1/images/generations 生成一张水彩风格的小猫插画。
+使用环境变量 AIBAL_API_KEY，模型 gpt-image-2，n=1，output_format=png，省略 size。
+只提交一次生成请求；如果网络中断或结果不明确，不要自动重复提交。
+将返回的 b64_json 解码，或下载返回的 url，保存到项目的 assets/kitten.png。
+不要打印、写入源码或在最终回复中展示 API Key。
+```
+
+运行前确认执行环境能读取该环境变量并允许网络请求。若客户端无法执行请求，你仍可在本机终端运行本文命令；Codex 聊天接入见 [Codex](/zh/codex)。
+
+## 常见问题
+
+### 没有可用的 API Key，或者提示权限不足
+
+确认 Key 已启用、未过期、未达到额度，且所属分组允许图片模型。登录网页成功不等于当前 Key 有图片调用权限。参见[创建 API Key](/zh/create-api-key)。
+
+### 为什么指定尺寸不可选
+
+页面会关闭当前无法按要求输出的尺寸。保持 **自动**，以实际生成文件的尺寸为准，不要通过修改请求参数绕过页面限制。
+
+### 请求失败、限流或结果未知怎么办
+
+余额不足时检查余额和 Key 额度；参数错误时检查格式、参考图和模型；限流时稍后再试。审核拒绝时调整提示词和素材。若提示 **结果与计费状态未知**，先到[使用记录](https://aibal.ai/usage)核对，再决定是否重新生成。需要反馈问题时保留请求 ID 和错误代码，不要发送完整 Key。
+
+### 页面里的 curl 可以直接分享吗
+
+不要直接分享。在线页面 **API 调用示例（curl）** 的复制内容可能包含完整 Key；分享前替换为环境变量，并检查剪贴板历史和截图。
+
+接下来可以尝试[文生视频](/zh/text-to-video)，或阅读[接入概览](/zh/integrations)把能力接入你的工作流。

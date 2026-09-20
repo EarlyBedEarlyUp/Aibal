@@ -1,4 +1,104 @@
 ---
 title: "Claude Code"
-description: "Connect aibal.ai to Claude Code"
+description: "Install Claude Code and connect its CLI with your aibal.ai key and gateway URL"
 ---
+
+This guide covers Claude Code CLI. Configure the service address, API Key and an available Claude model, then verify your first terminal conversation.
+
+## Before you start
+
+- [Create an API Key](/en/create-api-key) in a group that supports Claude Code. Check available Claude models and your balance.
+- Prepare a project folder. An empty folder is enough for the first test.
+- Check the [official Claude Code system requirements](https://code.claude.com/docs/en/setup).
+
+## Set up Claude Code
+
+<Steps>
+  <Step title="Install Claude Code">
+    Run the official installer in a macOS, Linux or WSL terminal:
+
+    ```bash
+    curl -fsSL https://claude.ai/install.sh | bash
+    ```
+
+    Windows PowerShell:
+
+    ```powershell
+    irm https://claude.ai/install.ps1 | iex
+    ```
+
+    Run `claude --version` afterward. If the command is not found, reopen your terminal and check `PATH` as instructed by the installer.
+  </Step>
+  <Step title="Check your key's configuration">
+    Sign in to [aibal.ai](https://aibal.ai/), open **Use Key** in the API Key list, and select Claude Code and your operating system. Confirm the address and a supported full Claude model ID. Replace `YOUR_AVAILABLE_CLAUDE_MODEL_ID` below.
+  </Step>
+  <Step title="Set the address, key and model">
+    In Bash or Zsh, run these commands and paste the key at the hidden-input prompt:
+
+    ```bash
+    export ANTHROPIC_BASE_URL="https://aibal.ai"
+    export ANTHROPIC_AUTH_TOKEN="$(bash -c 'read -r -s -p "aibal.ai API Key: " key; printf "\n" >&2; printf "%s" "$key"')"
+    export ANTHROPIC_MODEL="YOUR_AVAILABLE_CLAUDE_MODEL_ID"
+    ```
+
+    Windows PowerShell:
+
+    ```powershell
+    $env:ANTHROPIC_BASE_URL = "https://aibal.ai"
+    $credential = Get-Credential -UserName "aibal" -Message "Paste your aibal.ai API Key in the password field"
+    $env:ANTHROPIC_AUTH_TOKEN = $credential.GetNetworkCredential().Password
+    Remove-Variable credential
+    $env:ANTHROPIC_MODEL = "YOUR_AVAILABLE_CLAUDE_MODEL_ID"
+    ```
+
+    Do not append `/v1/messages` to this base address. If **Use Key** provides a group-specific path, use the complete base address it supplies.
+  </Step>
+  <Step title="Start and check your connection">
+    Enter your project folder in the same terminal and run `claude`. Complete the initial setup, then type `/status`. Check that **Anthropic base URL** points to aibal.ai and the credential source is `ANTHROPIC_AUTH_TOKEN`.
+  </Step>
+  <Step title="Send your first message">
+    Send:
+
+    ```text
+    Reply only "Connection successful". Do not read or edit files or run commands.
+    ```
+
+    After receiving an answer, check the model, time and cost in aibal.ai **Usage**. Tests may incur charges; confirm your account and key limits before coding.
+  </Step>
+</Steps>
+
+## What the three variables do
+
+| Variable | Purpose |
+| --- | --- |
+| `ANTHROPIC_BASE_URL` | Gateway base address, commonly `https://aibal.ai` |
+| `ANTHROPIC_AUTH_TOKEN` | Your aibal.ai API Key, sent as a Bearer token |
+| `ANTHROPIC_MODEL` | Full Claude model ID available to the current group |
+
+These are temporary variables for your current terminal. Set them again in a new terminal. To save and switch configurations in a graphical interface, use [cc-switch](/en/cc-switch). Never put a real key in project settings that will be committed to Git.
+
+## Common questions
+
+### It still asks me to use my previous account
+
+Check the address and credential source in `/status`. Setting only the address is not sufficient. Check for conflicting `ANTHROPIC_API_KEY`, `apiKeyHelper` or settings-file values, keep the intended credential source, and restart.
+
+### The variables do not affect VS Code or the desktop app
+
+Terminal variables reach only child processes started from that terminal. This guide covers the CLI. The VS Code extension and desktop app have separate configuration entry points; follow the [official gateway connection guide](https://code.claude.com/docs/en/llm-gateway-connect) for those surfaces.
+
+### The main model works but another model or subtask fails
+
+Models can require different group permissions. Do not assume default Sonnet, Opus or Haiku aliases are all available. Use the model IDs explicitly provided by the console; follow **Use Key** if model mapping is required.
+
+### I get 401, 404, 429 or a quota error
+
+Check the key, an extra `/v1` in the address, concurrency/rate limits, and account or key quota respectively. Avoid repeatedly retrying tasks that may incur charges. See [Integration overview](/en/integrations).
+
+## Key security and next steps
+
+Never send real keys to the model or share screenshots of terminals or configuration files containing them. If exposed, disable the old key in the console, create a replacement, and update your settings.
+
+Once connected, give Claude Code a small, clear task such as explaining a file. Before allowing edits, make sure the project has a backup or version control.
+
+References: [Official installation guide](https://code.claude.com/docs/en/setup), [official gateway connection guide](https://code.claude.com/docs/en/llm-gateway-connect).

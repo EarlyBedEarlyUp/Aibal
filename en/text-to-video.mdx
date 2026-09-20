@@ -1,8 +1,139 @@
 ---
 title: "Text to video (web and API)"
-description: "Use the online studio or asynchronous API"
+description: "Choose video settings, submit a task, and retrieve and download the result"
 ---
 
-In the signed-in video studio, choose a key, model, ratio, resolution, and duration, then submit a prompt. Video jobs are asynchronous: keep the task ID and poll its status until a result or error is returned.
+Describe a scene to create a video task. Generation is asynchronous: an accepted request still needs processing before the video can be played or downloaded.
 
-The public video task endpoint is `https://aibal.ai/api/v3/contents/generations/tasks`. Use the model and fields currently accepted by the console.
+## Before you start
+
+- Sign in to [aibal.ai](https://aibal.ai/login) and prepare an active [API Key](/en/create-api-key) whose group supports video.
+- Check your account balance and Key quota; [top up](/en/recharge) if needed. Web and API generation both incur usage charges.
+- Start with a short duration. Current console pricing, service availability, and quotas apply.
+
+## Generate video in the browser
+
+<Frame caption="Text to Video in Chinese. No API Key is selected and no generation task has been submitted.">
+  <img src="/images/text-to-video-zh.png" alt="Chinese video studio with Key, duration, ratio, resolution, prompt, and unavailable first-frame input" />
+</Frame>
+
+<Steps>
+  <Step title="Open Text to Video">
+    Open [Text to Video](https://aibal.ai/video-studio) and select an **API Key**. The page currently uses the fixed model `seedance-2`.
+  </Step>
+  <Step title="Choose basic settings">
+    For a first attempt, use **Duration: 4 s**, **Aspect Ratio: 1:1**, and **Resolution: 480p**. On mobile, tap **Video settings** if the panel is collapsed.
+  </Step>
+  <Step title="Write a prompt">
+    Describe the subject, movement, scene, and camera. For example: “A blue cube rotates slowly on a clean white background, soft studio lighting, fixed camera, simple composition, no text.”
+
+    **First-frame image** is currently unavailable; no image upload is needed.
+  </Step>
+  <Step title="Submit and wait">
+    Click **Generate Video** and watch **Video Result** for automatic status updates. Do not submit the same request repeatedly or treat a queued or processing task as a failure.
+  </Step>
+  <Step title="Play and download">
+    When the status becomes **Completed**, play the result. Click **Download Video** to save it. If your browser opens a playback page, use its player or save controls. You can also use **Open in new window**.
+  </Step>
+  <Step title="Review previous tasks">
+    Select a task under **History** to view its prompt, settings, status, and result. The queried task status is authoritative; closing your browser does not cancel it.
+  </Step>
+</Steps>
+
+### Parameter reference
+
+| Field | Current behavior |
+| --- | --- |
+| **Model** | Fixed to `seedance-2` in the web studio. |
+| **Duration** | 4–15 seconds, in whole seconds. |
+| **Aspect Ratio** | `1:1` for square, `16:9` for landscape, `9:16` for portrait. |
+| **Resolution** | `480p`, `720p`, or `1080p`; higher specifications may cost more and take longer. |
+| **Prompt** | Required. Clearly describe the subject, motion, and scene. |
+| **First-frame image / audio** | This workflow supports text input only; first-frame input and audio generation are unavailable. |
+
+## Create video through the API
+
+Use `curl` and set `AIBAL_API_KEY` securely in your local environment. The following request creates a real task and may incur charges.
+
+<Note>
+The `seedance-2` endpoint is `/api/v3/contents/generations/tasks`, without `/v1`. Do not reuse another video model's endpoint or request body.
+</Note>
+
+### 1. Create a task
+
+```bash
+curl --fail-with-body https://aibal.ai/api/v3/contents/generations/tasks \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "seedance-2",
+    "content": [{"text": "A blue cube rotates slowly on a clean white background, fixed camera"}],
+    "duration": 4,
+    "resolution": "480p",
+    "ratio": "1:1",
+    "generate_audio": false
+  }' \
+  -o video-task.json
+```
+
+`content` must contain exactly one text item. The example matches the initial web settings; set `generate_audio` to `false`. Do not use `seedance-2-fast` or the `adaptive` ratio in this workflow.
+
+The response is saved as `video-task.json` in the current directory. Open the file and keep its `id` for later queries. A successful HTTP request returns task information; inspect `status` to determine whether generation has finished.
+
+If your program retries creation requests, add an `Idempotency-Key` header: use a unique value for each new task, and keep that value and request body unchanged for retries of the same task. Do not use a new value simply because a request timed out.
+
+### 2. Query the task
+
+Replace the placeholder with the returned `id` and query using the original API Key:
+
+```bash
+AIBAL_VIDEO_TASK_ID="REPLACE_WITH_TASK_ID"
+curl --fail-with-body \
+  "https://aibal.ai/api/v3/contents/generations/tasks/$AIBAL_VIDEO_TASK_ID" \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -o video-status.json
+```
+
+Open `video-status.json` to read the returned `status`. Query approximately every 5 seconds and increase the interval after temporary query errors. Do not create another task instead of querying the existing one.
+
+| `status` | What to do |
+| --- | --- |
+| `accepted`, `submitting`, `submitted`, `queued`, `running` | Processing continues; query again later. |
+| `succeeded` | Read `content.video_url`. |
+| `failed`, `expired` | Stop polling and inspect `error.code` and `error.message`. |
+| `unknown_submission` | The submission outcome is uncertain. Stop automatic retries, check tasks and usage, and contact support if needed. |
+
+### 3. Save the video
+
+A successful result provides `content.video_url`. Open that URL or place it in the command below:
+
+```bash
+AIBAL_VIDEO_URL="REPLACE_WITH_CONTENT_VIDEO_URL"
+curl --fail --location "$AIBAL_VIDEO_URL" --output generated-video.mp4
+```
+
+Do not attach your aibal.ai API Key to the download request. Save the file promptly; do not treat the result URL as permanent storage.
+
+## Frequently asked questions
+
+### The button is disabled or no Key is available
+
+Select an active Key and enter a prompt. The Key's group must allow video generation; an account balance or access to text models alone does not provide video access.
+
+### Can I cancel a submitted task?
+
+Video task cancellation is currently unsupported. Closing or refreshing the page, or interrupting your local request, does not cancel a submitted task. Review the prompt and specifications before submitting.
+
+### The task completed but playback fails
+
+Try **Open in new window**, then download the file. If it remains unavailable, keep the task ID and error details for support. Do not immediately create the same task again to obtain another URL.
+
+### What about insufficient balance, invalid parameters, or an unknown status?
+
+Check balance and Key quota for billing errors; verify model, duration, ratio, and resolution for input errors. For `unknown_submission` or a timeout, check **History** and [usage records](https://aibal.ai/usage) before retrying, to avoid duplicate tasks and charges.
+
+<Warning>
+Do not share full API Keys, commands containing Keys, or private video URLs. Send support the task ID, error code, and a redacted description.
+</Warning>
+
+Try [text to image](/en/text-to-image), or continue to the [integration overview](/en/integrations).

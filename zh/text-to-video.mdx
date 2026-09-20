@@ -1,31 +1,139 @@
 ---
 title: "文生视频（在线使用与 API）"
-description: "在线创建视频，或通过异步 API 提交视频任务"
+description: "设置画面、时长与分辨率，提交视频任务并查询、下载结果"
 ---
 
-## 在线
+输入一段描述即可创建视频任务。视频采用异步生成：提交成功后还需要等待处理，任务完成后才能播放和下载。
 
-登录后打开 **文生视频** 或 **Video Studio** 页面，按页面顺序选择 API Key、模型、分辨率、画幅和时长，填写提示词后提交任务。
+## 操作前准备
 
-当前项目的视频任务是异步处理：提交后先得到任务状态，页面会自动刷新或允许你手动查看历史任务。生成时间、可用模型、分辨率、时长和费用以页面当前选项为准。
+- 登录 [aibal.ai](https://aibal.ai/login)，准备已启用、所属分组支持视频的 [API Key](/zh/create-api-key)。
+- 确认账户余额和 Key 额度足够，必要时先[充值](/zh/recharge)。在线生成与 API 调用都会产生费用。
+- 先用较短时长体验，价格、可用服务和额度以控制台当前展示为准。
 
-建议先使用短提示词和较低规格验证流程，再提交更长时长或更高分辨率的任务。任务失败时先查看错误信息和余额，不要连续重复提交。
+## 在线生成视频
 
-## API
+<Frame caption="在线文生视频页面（中文界面；当前未选择 API Key，也未提交生成任务）">
+  <img src="/images/text-to-video-zh.png" alt="视频页面的 API Key、时长、比例、分辨率与提示词设置，首帧图片暂未开放" />
+</Frame>
 
-项目对外提供异步视频任务接口。典型流程是：创建任务、保存任务标识、轮询任务状态、在成功后读取结果地址。
+<Steps>
+  <Step title="打开在线文生视频">
+    登录后打开[在线文生视频](https://aibal.ai/video-studio)，在参数区域选择 **API Key**。当前页面使用固定模型 `seedance-2`。
+  </Step>
+  <Step title="选择基础参数">
+    首次体验可使用 **时长：4 秒**、**画面比例：1:1**、**分辨率：480p**。手机端若参数面板收起，点击 **视频参数** 展开。
+  </Step>
+  <Step title="填写提示词">
+    描述主体、动作、场景与镜头。例如：“一个蓝色立方体在干净的白色背景上缓慢旋转，柔和的摄影棚灯光，固定镜头，画面简洁，无文字。”
+
+    当前 **首帧图片** 标为暂未开放，不需要上传图片。
+  </Step>
+  <Step title="提交并等待完成">
+    点击 **生成视频**。在 **视频结果** 查看状态，等待页面自动更新。提交后不要为同一个需求反复点击生成，也不要把排队或生成中当作失败。
+  </Step>
+  <Step title="播放并下载视频">
+    状态变为 **已完成** 后，在结果区域播放。点击 **下载视频** 保存；若浏览器打开播放页面，可使用播放器或浏览器的保存功能。也可以点击 **新窗口打开** 检查视频。
+  </Step>
+  <Step title="查看历史任务">
+    在 **历史任务** 中选择任务，查看对应提示词、参数、状态和结果。已提交任务的状态以任务查询结果为准，关闭浏览器不会取消任务。
+  </Step>
+</Steps>
+
+### 参数说明
+
+| 字段 | 当前使用方式 |
+| --- | --- |
+| **模型** | 在线页面固定为 `seedance-2`。 |
+| **时长** | 4–15 秒，按整秒选择。 |
+| **画面比例** | `1:1` 适合方形画面，`16:9` 适合横屏，`9:16` 适合竖屏。 |
+| **分辨率** | `480p`、`720p`、`1080p`；较高规格可能增加费用和等待时间。 |
+| **提示词** | 必填；尽量用清晰的主体、动作和场景描述。 |
+| **首帧图片 / 音频** | 当前流程仅支持文字生成视频，不支持首帧输入或音频生成。 |
+
+## 通过 API 创建视频
+
+使用 `curl`，并在本机安全设置 `AIBAL_API_KEY` 环境变量。以下请求会创建真实视频任务并可能产生费用。
+
+<Note>
+本页 `seedance-2` 使用的地址是 `/api/v3/contents/generations/tasks`，不带 `/v1`。不要将其他视频模型的接口地址或请求体直接套用到这个接口。
+</Note>
+
+### 1. 创建任务
 
 ```bash
-curl https://aibal.ai/api/v3/contents/generations/tasks \
+curl --fail-with-body https://aibal.ai/api/v3/contents/generations/tasks \
   -H "Authorization: Bearer $AIBAL_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "seedance-2",
-    "content": [{"type": "text", "text": "一只猫在雨后的城市街道慢慢行走"}],
-    "ratio": "16:9",
+    "content": [{"text": "A blue cube rotates slowly on a clean white background, fixed camera"}],
     "duration": 4,
-    "watermark": false
-  }'
+    "resolution": "480p",
+    "ratio": "1:1",
+    "generate_audio": false
+  }' \
+  -o video-task.json
 ```
 
-返回的任务状态和字段以当前接口响应为准。不要把 API Key 写入浏览器脚本或提交到代码仓库。
+`content` 必须包含且只包含一项文字内容。示例中的参数与网页初次体验一致；`generate_audio` 使用 `false`。当前不要使用 `seedance-2-fast` 或 `adaptive` 比例。
+
+响应保存在当前目录的 `video-task.json`。打开该文件，保存其中的 `id`，它是后续查询的任务标识。HTTP 请求成功只表示返回了任务信息，最终是否完成要看 `status`。
+
+如果你的程序需要重试创建请求，可以添加 `Idempotency-Key` 请求头：每个新任务使用唯一值，同一任务的重试保持该值及请求内容不变。不要因为请求超时就换一个值盲目重新提交。
+
+### 2. 查询任务
+
+将下面的占位内容替换成刚才响应中的 `id`，使用原 API Key 查询：
+
+```bash
+AIBAL_VIDEO_TASK_ID="REPLACE_WITH_TASK_ID"
+curl --fail-with-body \
+  "https://aibal.ai/api/v3/contents/generations/tasks/$AIBAL_VIDEO_TASK_ID" \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -o video-status.json
+```
+
+查询结果保存在 `video-status.json`，打开文件查看 `status`。建议每隔约 5 秒查询一次，遇到临时查询错误适当延长间隔。不要用重复创建任务代替查询。
+
+| `status` | 你应该怎么做 |
+| --- | --- |
+| `accepted`、`submitting`、`submitted`、`queued`、`running` | 任务仍在处理中，继续查询。 |
+| `succeeded` | 生成完成，读取 `content.video_url`。 |
+| `failed`、`expired` | 停止轮询，查看 `error.code` 和 `error.message`。 |
+| `unknown_submission` | 提交结果不确定；停止自动重试，核对任务和使用记录，必要时联系支持。 |
+
+### 3. 保存结果
+
+成功响应会提供 `content.video_url`。打开该地址查看，或将其填入下方命令：
+
+```bash
+AIBAL_VIDEO_URL="REPLACE_WITH_CONTENT_VIDEO_URL"
+curl --fail --location "$AIBAL_VIDEO_URL" --output generated-video.mp4
+```
+
+结果下载请求不需要附带 aibal.ai 的 API Key。及时保存视频，不要将结果地址当作永久文件存储。
+
+## 常见问题
+
+### 生成按钮不可点，或者没有可用 Key
+
+先选择已启用的 Key 并填写提示词。视频功能还需要 Key 所属分组允许调用；有余额或可以调用文字模型，不代表视频权限已经开通。
+
+### 提交后可以取消吗
+
+当前视频任务不支持取消。关闭页面、刷新或中断本地请求都不等于取消已提交任务。请提交前检查提示词和规格。
+
+### 任务已完成但无法播放
+
+先点击 **新窗口打开**，再尝试下载。若仍不可用，保留任务 ID 和错误信息反馈；不要为了重新获得链接立即创建相同任务。
+
+### 余额不足、参数错误或状态未知怎么办
+
+余额不足时核对余额与 Key 额度；参数错误时检查模型、时长、比例和分辨率。遇到 `unknown_submission` 或网络超时时，先查看 **历史任务** 和[使用记录](https://aibal.ai/usage)，避免重复产生任务和费用。
+
+<Warning>
+不要公开完整 API Key、包含 Key 的调用示例或私人视频地址。向支持反馈时，只提供任务 ID、错误代码和已脱敏的说明。
+</Warning>
+
+需要先体验图片生成，可以查看[文生图](/zh/text-to-image)；需要接入程序，继续阅读[接入概览](/zh/integrations)。

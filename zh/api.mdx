@@ -1,47 +1,24 @@
 ---
-title: "API 使用方式"
-description: "通过统一的 HTTPS 接口调用 AI 模型"
+title: "API 接入指南入口"
+description: "选择文本工具、图片或视频接口，查看对应示例与错误处理"
 ---
 
-## 基本请求
+不同客户端和媒体模型使用的协议与路径不同。请打开对应的新指南，使用与你的 Key 分组匹配的地址、模型和请求格式。
 
-所有请求都应通过 HTTPS 发送，并使用 Bearer Token 认证：
+## 选择你的接入方式
 
-```http
-Authorization: Bearer sk-your-key
-Content-Type: application/json
-```
+<Card title="接入概览" href="/zh/integrations">
+  核对基础地址、鉴权、模型 ID，并进入 Codex 或 Claude Code 教程。
+</Card>
 
-### Chat Completions
+<Card title="图片 API" href="/zh/text-to-image">
+  查看图片生成、编辑及 Base64 或 URL 结果保存示例。
+</Card>
 
-```bash
-curl https://api.aibal.ai/v1/chat/completions \
-  -H "Authorization: Bearer $AIBAL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"your-model","messages":[{"role":"user","content":"写一段产品介绍"}],"temperature":0.7}'
-```
+<Card title="视频 API" href="/zh/text-to-video">
+  查看 Seedance 任务创建、状态查询及视频下载示例。
+</Card>
 
-响应通常包含 `id`、`model`、`choices` 和 `usage`。流式请求可设置 `stream: true`，客户端需要按 SSE 事件逐段读取内容。
-
-## Python 示例
-
-```python
-from openai import OpenAI
-
-client = OpenAI(
-    api_key="sk-your-key",
-    base_url="https://api.aibal.ai/v1",
-)
-response = client.chat.completions.create(
-    model="your-model",
-    messages=[{"role": "user", "content": "你好"}],
-)
-print(response.choices[0].message.content)
-```
-
-## 稳定性建议
-
-- 为每次业务请求记录自己的 trace ID，并关联平台返回的请求 ID。
-- 对 `408`、`429` 和暂时性 `5xx` 使用带抖动的指数退避。
-- 设置客户端连接和读取超时，避免请求长期占用工作线程。
-- 对非幂等业务避免盲目重试，必要时使用业务侧去重键。
+<Note>
+先创建并启用 API Key，再确认目标模型权限和额度。密钥放在环境变量或可信的密钥管理器中；不要嵌入公开网页代码，也不要将一个接口的路径直接套用到另一个接口。
+</Note>

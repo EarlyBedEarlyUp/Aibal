@@ -1,4 +1,114 @@
 ---
 title: "cc-switch"
-description: "将 aibal.ai 接入 cc-switch"
+description: "通过 CC Switch 图形界面，为 Codex 或 Claude Code 添加和切换 aibal.ai 服务"
 ---
+
+CC Switch 用来管理编程工具的服务配置。它不是模型服务本身，也不会替代 Codex 或 Claude Code 的安装。本教程分别配置两个工具，选你需要的一种即可。
+
+## 操作前准备
+
+- 已[创建 API Key](/zh/create-api-key)，为目标工具选择了正确的服务分组与可用模型。
+- 从 [CC Switch 官方 Releases](https://github.com/farion1231/cc-switch/releases)下载适合系统与芯片架构的安装包，按安装器提示完成安装。
+- 已安装 [Codex CLI](/zh/codex) 或 [Claude Code](/zh/claude-code)。
+
+首次启动时，先保留或导入已有配置，避免覆盖仍在使用的服务。按钮位置和名称可能随 CC Switch 版本变化。
+
+## 添加 aibal.ai 供应商
+
+<Steps>
+  <Step title="选择要配置的应用">
+    打开 CC Switch，在应用切换区选择 **Codex** 或 **Claude Code**。本教程使用应用专属供应商，让两个工具各自保存配置。
+  </Step>
+  <Step title="打开添加面板">
+    点击右上角 **+** / **添加供应商**，选择 **应用专属供应商**，再选择 **自定义**。名称填写 `aibal.ai - Codex` 或 `aibal.ai - Claude Code`，便于以后区分。
+  </Step>
+  <Step title="填写对应客户端的配置">
+    按下方 **Codex 配置** 或 **Claude Code 配置**填写地址、密钥与模型。控制台 **使用密钥** 给出专用地址时，以该地址为准。两个客户端的基础地址写法不同，不要直接互相复制。
+  </Step>
+  <Step title="保存并启用">
+    点击 **添加**保存。回到主界面找到该供应商，点击 **启用**。关闭旧客户端会话，再启动目标 CLI，确保新会话读取到这次配置。
+  </Step>
+  <Step title="验证第一次调用">
+    给目标工具发送“只回复连接成功，不要读取或修改文件，不要执行命令”。收到回答后，在 aibal.ai **使用记录** 中核对本次密钥、模型与时间。保存成功不等于调用成功；验证消息也可能产生费用。
+  </Step>
+</Steps>
+
+## Codex 配置
+
+选择 **Codex** 后，按当前版本的表单或配置编辑器填写：
+
+| 项目 | 内容 |
+| --- | --- |
+| 名称 | `aibal.ai - Codex` |
+| API Key | 当前分组的 aibal.ai API Key |
+| Base URL / 端点 | `https://aibal.ai/v1` |
+| 模型 | 控制台给出的完整可用文本模型 ID |
+| 协议 | `responses` |
+
+如果界面提供 **auth.json** 与 **config.toml** 编辑区，使用以下配套示例。把密钥和模型占位符替换为你的值，只在本机 CC Switch 中保存。
+
+`auth.json`：
+
+```json
+{
+  "OPENAI_API_KEY": "YOUR_AIBAL_API_KEY"
+}
+```
+
+`config.toml`：
+
+```toml
+model_provider = "aibal"
+model = "YOUR_AVAILABLE_MODEL_ID"
+
+[model_providers.aibal]
+name = "aibal.ai"
+base_url = "https://aibal.ai/v1"
+wire_api = "responses"
+requires_openai_auth = true
+supports_websockets = false
+```
+
+这里采用 CC Switch 官方教程的 `auth.json` 密钥方式，因此 `requires_openai_auth = true`。不要同时添加 [Codex 手动教程](/zh/codex)中的 `env_key`；那是另一种鉴权配置。需要模型目录文件的分组，应同时完成控制台 **使用密钥** 中的目录设置。
+
+## Claude Code 配置
+
+选择 **Claude Code**，名称填写 `aibal.ai - Claude Code`。在自定义配置编辑区填入：
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://aibal.ai",
+    "ANTHROPIC_AUTH_TOKEN": "YOUR_AIBAL_API_KEY",
+    "ANTHROPIC_MODEL": "YOUR_AVAILABLE_CLAUDE_MODEL_ID"
+  }
+}
+```
+
+替换两个占位符：密钥来自 aibal.ai，模型来自该密钥分组支持的 Claude 模型列表。这里的地址不带 `/v1`。启动 Claude Code 后输入 `/status`，确认网关地址和凭证来源。
+
+## 日常切换与恢复
+
+在对应应用下找到目标供应商并点击 **启用**，然后启动新会话。Codex 与 Claude Code 是两套配置，切换其中一个不会代表另一个已经切换。
+
+要恢复原服务，启用之前保留的供应商；要恢复官方账户登录，可使用 CC Switch 的 **官方登录** 预设，并按客户端官方流程登录。不要通过删除所有配置来尝试恢复。
+
+## 常见问题
+
+### 启用后仍然请求旧服务
+
+确认选对了应用、供应商已启用，并重新启动客户端。检查环境变量和 CC Switch 的公共配置是否覆盖当前供应商；后续尽量在 CC Switch 同一处维护配置。
+
+### 模型列表为空或自动获取失败
+
+可用模型与密钥分组有关。重新核对 Key 和地址，也可以手工填入控制台 **使用密钥** 中提供的完整模型 ID，不要用其他服务的模型名称替代。
+
+### 为什么 Codex 和 Claude Code 的地址不一样
+
+客户端拼接请求路径的方式不同：本教程 Codex 配置使用 `/v1` 基础地址，Claude Code 使用站点根地址。多加或少加一层路径都可能产生 `404`。
+
+### 导出配置可以分享给别人吗
+
+供应商配置和备份可能包含真实 API Key。不要上传公开仓库、群聊或不可信同步空间。仅分享已经替换密钥的模板；泄露时立即停用旧密钥。
+
+更多连接错误见[接入概览](/zh/integrations)。CC Switch 自身功能与最新界面请参阅[官方用户手册](https://github.com/farion1231/cc-switch/blob/main/docs/user-manual/zh/README.md)。

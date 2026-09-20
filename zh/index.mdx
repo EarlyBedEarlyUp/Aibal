@@ -1,30 +1,24 @@
 ---
-title: "aibal.ai 中文文档"
-description: "统一管理 AI 模型、API 密钥与团队用量"
+title: "aibal.ai 用户指南入口"
+description: "从平台介绍到首次使用，找到适合你的操作指南"
 ---
 
-# 一站式 AI 接入平台
+欢迎使用 aibal.ai。你可以在网页端生成图片与视频，也可以按对应教程把 API 接入自己的工具。完整介绍请从平台简介开始。
 
-aibal.ai 为应用开发者提供统一的 AI API 入口。你可以在一个控制台中配置多个上游模型服务，创建项目密钥，按团队或业务分组管理访问权限，并通过兼容 OpenAI 的接口快速接入现有应用。
+## 从这里开始
 
-## 你可以用 aibal.ai 做什么
+<Card title="平台简介" href="/zh/platform-overview">
+  了解平台提供的使用方式，以及开始使用前需要准备什么。
+</Card>
 
-- 通过统一接口调用聊天、文本生成、视觉和嵌入模型。
-- 将不同供应商隐藏在同一层路由之后，减少应用侧改造成本。
-- 为开发、测试和生产环境创建独立密钥。
-- 查看请求量、Token 用量、余额和费用明细。
-- 使用分组、限额和权限策略隔离团队与业务。
+<Card title="快速体验" href="/zh/web-quickstart">
+  按步骤准备账户与 API Key，在浏览器中生成并保存第一张图片。
+</Card>
 
-<Card title="快速开始" icon="rocket" href="/zh/quickstart">十分钟内完成首次 API 调用</Card>
-<Card title="核心能力" icon="sparkles" href="/zh/features">了解路由、模型与用量管理</Card>
-<Card title="API 使用方式" icon="code" href="/zh/api">查看兼容 OpenAI 的请求示例</Card>
+<Card title="开发者接入" href="/zh/integrations">
+  选择 CC Switch、Codex 或 Claude Code，并配置对应协议与地址。
+</Card>
 
-## 推荐接入流程
-
-1. 注册并登录控制台。
-2. 配置可用的上游渠道和模型。
-3. 创建一个仅用于当前环境的 API 密钥。
-4. 将应用的 `base_url` 指向 aibal.ai API 地址。
-5. 在控制台检查调用日志、用量和错误信息。
-
-<Note>请把 API 密钥当作密码保存。生产环境建议使用服务端代理和密钥管理系统。</Note>
+<Note>
+实际模型、价格、额度和可用服务以控制台当前展示为准。不要在提示词或公开配置中填写 API Key。
+</Note>

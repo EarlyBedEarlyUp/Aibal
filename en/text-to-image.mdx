@@ -1,6 +1,173 @@
 ---
 title: "Text to image (web and API)"
-description: "Generate images online or through the compatible API"
+description: "Create your first image, edit references, and use the image API from your own tools"
 ---
 
-Use **Image Studio** for a first test. For API clients, send a supported model and prompt to `https://aibal.ai/v1/images/generations` with a Bearer key. Codex users should configure `https://aibal.ai/v1` as the provider base URL and keep the key outside prompts and source code.
+Describe an image in the browser or call the same capability from your application. Add reference images when you want to edit existing artwork.
+
+## Before you start
+
+- Sign in to [aibal.ai](https://aibal.ai/login) and prepare an active [API Key](/en/create-api-key) with access to image generation.
+- Check your account balance and Key quota; [top up](/en/recharge) if needed. Web generation also incurs usage charges.
+- Upload only images you have permission to process. Keep passwords, identity documents, and other sensitive content out of your references.
+
+Available models, parameters, and pricing follow the current console. This guide uses the online studio's `gpt-image-2` model.
+
+## Generate images in the browser
+
+<Frame caption="Image Studio in Chinese. No API Key has been created yet; prepare one before generating.">
+  <img src="/images/text-to-image-zh.png" alt="Chinese Image Studio showing prompt and reference controls and the no-active-Key message" />
+</Frame>
+
+<Steps>
+  <Step title="Open Image Studio">
+    Open [Image Studio](https://aibal.ai/image-studio) and select an **API Key** in the settings area. If no active Key is available, choose **Manage API Keys**, create or enable one, then return.
+  </Step>
+  <Step title="Choose image settings">
+    For your first image, keep **Ratio and size: Auto**, **Quality: Auto**, **Output count: 1**, and **Output format: PNG**. Grayed-out sizes are unavailable; a visible option does not necessarily mean it is supported.
+  </Step>
+  <Step title="Describe your image">
+    Enter a **Prompt** describing the subject, scene, composition, and style. For example: “An orange kitten by a sunny window, soft afternoon light, blurred green plants in the background, watercolor illustration, no text.”
+
+    You do not need a reference for text-to-image generation.
+  </Step>
+  <Step title="Submit the request">
+    Click **Generate** and wait for **Submitting** and **Processing** to become **Completed**. Keep the page open. If the connection drops, check usage before submitting again.
+  </Step>
+  <Step title="Preview and save">
+    Click **Preview** on the result card, then **Download** to save the file. Use **Copy prompt** or **Reuse parameters** to continue refining it.
+  </Step>
+</Steps>
+
+<Warning>
+The current Image Studio result list belongs to this page session. Download images before refreshing or leaving. Closing the page does not mean upstream generation has been canceled.
+</Warning>
+
+### Choose parameters
+
+<Frame caption="Image settings in Chinese. Keep Auto when fixed sizes are grayed out.">
+  <img src="/images/text-to-image-options-zh.png" alt="Chinese image settings for size, quality, count, format, compression, and background" />
+</Frame>
+
+| Field | How to use it |
+| --- | --- |
+| **Model** | The page currently shows `gpt-image-2`; your Key's group must allow this model. |
+| **Ratio and size** | Use **Auto**. Only enabled options are available; fixed sizes cannot be selected while grayed out. |
+| **Quality** | Auto, Low, Medium, or High. Start with Auto and adjust after reviewing the result. |
+| **Output count** | The page offers 1–4 images. Start with 1; requesting more may increase the charge. |
+| **Output format** | PNG, JPEG, or WebP, depending on how you will use the image. |
+| **Compression** | Applies only to JPEG / WebP. Lower values compress more strongly; PNG ignores this setting. |
+| **Background** | Auto or Opaque. Auto does not guarantee a transparent background. |
+
+### Edit with reference images
+
+Click **Add reference images (optional)** and upload PNG, JPEG, or WebP files. You can add up to 4 references, no more than 10MB each and 40MB in total. With several images, use **Set as main** to choose the main reference; use **Remove** to discard one.
+
+Describe the intended change, such as “Keep the subject and composition; replace the background with light blue.” Click **Generate**, then preview and download as above. You can also select **Use as reference** on an existing result.
+
+## Generate images through the API
+
+Install `curl` and set `AIBAL_API_KEY` securely in your local environment. Do not put a real Key in documentation, shared scripts, or source control. These commands submit real generation requests and may incur charges.
+
+### Send a text-to-image request
+
+```bash
+curl --fail-with-body https://aibal.ai/v1/images/generations \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-image-2",
+    "prompt": "An orange kitten by a sunny window, watercolor illustration, no text",
+    "n": 1,
+    "output_format": "png",
+    "background": "auto"
+  }' \
+  -o image-response.json
+```
+
+Omitting `size` and `quality` matches the web app's automatic options. A successful response contains a `data` array, with images returned as `b64_json` or `url`; do not assume every response contains a directly accessible URL.
+
+If `data[0].b64_json` is present, use Python 3 to save the first PNG:
+
+```bash
+python3 -c 'import base64,json,pathlib; r=json.loads(pathlib.Path("image-response.json").read_text()); pathlib.Path("image.png").write_bytes(base64.b64decode(r["data"][0]["b64_json"]))'
+```
+
+If the response contains `data[0].url`, open that URL and download the result promptly. Do not forward your aibal.ai API Key to the image URL.
+
+### Send an image-edit request
+
+Replace `/path/to/reference.png` with your actual file path. This endpoint uses a form upload; do not set a JSON `Content-Type` header.
+
+```bash
+curl --fail-with-body https://aibal.ai/v1/images/edits \
+  -H "Authorization: Bearer $AIBAL_API_KEY" \
+  -F "image[]=@/path/to/reference.png" \
+  --form-string "model=gpt-image-2" \
+  --form-string "prompt=Keep the subject and replace the background with light blue" \
+  --form-string "n=1" \
+  --form-string "output_format=png" \
+  --form-string "background=auto" \
+  -o image-response.json
+```
+
+Repeat `-F "image[]=@..."` for additional references. Save the response in the same way as for text-to-image generation.
+
+### Special notes for Codex
+
+#### Clients with an image executor
+
+For Keys in an OpenAI group, the console provides two Codex configurations: **Compatibility mode** and **API Key Mode**. Compatibility mode keeps the older client setup; **API Key Mode** authorizes the image executor in clients that support this feature.
+
+<Steps>
+  <Step title="Open the Key configuration">
+    In the aibal.ai API Key list, locate a Key in an OpenAI group, click **Use Key**, and select **Codex CLI**.
+  </Step>
+  <Step title="Select API Key Mode">
+    Under **Codex authentication mode**, select **API Key Mode**, then choose your operating system. This option appears only for the corresponding group and client selections.
+  </Step>
+  <Step title="Save the complete configuration">
+    Save the generated configuration as instructed. If a model catalog file is required, save that too. Back up existing settings first; do not mix this setup with manual `env_key` settings or Compatibility mode's `auth.json` fragments. Copied settings contain your real Key and must be kept private on your device.
+  </Step>
+  <Step title="Restart completely and create a new task">
+    Completely quit Codex Desktop or CLI, reopen it, and create a new task. Refreshing a task or continuing an old session does not perform the reinitialization requested by the console.
+  </Step>
+</Steps>
+
+This workflow applies to clients with the relevant image executor; it does not guarantee built-in image generation in every Codex version. Check the tools available in your client. A successful text conversation alone does not verify image configuration.
+
+#### Call the image API explicitly
+
+You can also ask Codex to call the aibal.ai image API above and save the result locally. This explicitly sets the endpoint, model, and output path without relying on automatic selection of a built-in image tool.
+
+You can use this instruction:
+
+```text
+Generate one watercolor kitten illustration using https://aibal.ai/v1/images/generations.
+Read AIBAL_API_KEY from the environment. Use model gpt-image-2, n=1, output_format=png, and omit size.
+Submit only one generation request. Do not retry automatically if the connection drops or the outcome is uncertain.
+Decode b64_json or download the returned url and save the result as assets/kitten.png in this project.
+Do not print the API Key, write it into source code, or include it in the final response.
+```
+
+Confirm that the execution environment can read the variable and make network requests. If your client cannot execute requests, run the commands in your local terminal. See [Codex](/en/codex) for chat integration.
+
+## Frequently asked questions
+
+### No active API Key or permission denied
+
+Check that your Key is active, unexpired, within quota, and in a group that supports the image model. Signing in does not grant every Key image access. See [Create an API Key](/en/create-api-key).
+
+### Why are fixed sizes unavailable?
+
+The page disables sizes that cannot currently be returned as requested. Keep **Auto** and check the actual file dimensions. Do not bypass unavailable options by modifying request parameters.
+
+### What if the request fails, is rate limited, or has an unknown outcome?
+
+For billing errors, check balance and Key quota. For input errors, check format, references, and model. Wait before retrying a rate-limited request; revise prompts or references after moderation rejection. If the outcome and billing status are unknown, check [usage records](https://aibal.ai/usage) before generating again. Keep request IDs and error codes for support, without sharing the full Key.
+
+### Can I share the copied curl command?
+
+Not as copied. The online **API example (curl)** may include your full Key. Replace it with an environment variable before sharing, and check clipboard history and screenshots.
+
+Next, try [text to video](/en/text-to-video) or read the [integration overview](/en/integrations).

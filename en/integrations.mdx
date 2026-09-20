@@ -1,13 +1,79 @@
 ---
 title: "Integration overview"
-description: "Connect aibal.ai to common clients"
+description: "Choose a client, prepare your key and model, and verify your first connection"
 ---
 
-Use `https://aibal.ai/v1`, a key created in the console, and a currently available model.
+Use aibal.ai in your browser or connect its API services to a local coding tool. Choose your tool first, then follow its dedicated guide.
 
-- **cc-switch**: add a custom provider with the base URL and key, then send a short test request.
-- **Codex**: configure the provider base URL and a dedicated development key.
-- **Claude Code**: set the provider environment values and verify the key's group permissions.
-- **Web**: sign in and use Image Studio or Video Studio without configuring a client.
+## Choose how to connect
 
-Keep keys in environment variables or a secret manager.
+| Your goal | Recommended guide | What you need |
+| --- | --- | --- |
+| Try image or video generation without installing software | [Web quick start](/en/web-quickstart) | Signed-in account, API Key and available balance |
+| Manage and switch coding tool providers in a graphical interface | [cc-switch](/en/cc-switch) | CC Switch, the target client and an API Key |
+| Code with Codex in a terminal | [Codex](/en/codex) | Codex CLI, a Responses-compatible model and an API Key |
+| Code with Claude Code in a terminal | [Claude Code](/en/claude-code) | Claude Code, an available Claude model and an API Key |
+| Generate images or videos from your own program | [Text to image](/en/text-to-image) / [Text to video](/en/text-to-video) | A runtime and access to the relevant service |
+
+## Before you start
+
+<Steps>
+  <Step title="Prepare your account">
+    [Register an account](/en/register), sign in to [aibal.ai](https://aibal.ai/), and confirm that your account is available. Follow the [top-up guide](/en/recharge) when you need more balance.
+  </Step>
+  <Step title="Create a key for your tool">
+    [Create an API Key](/en/create-api-key), using a separate name such as `codex-laptop` or `claude-work` for each tool. Check that it is active, has not expired, and belongs to a group that supports your model.
+  </Step>
+  <Step title="Check the key's usage configuration">
+    Click **Use Key** in the key list and select your client and operating system. Prefer the addresses and model settings generated there: they can vary by group. Your account password is not an API Key.
+  </Step>
+  <Step title="Configure and verify">
+    Follow the guide for your tool, save the configuration, and start a new session. Send a short message, then check its model and cost in **Usage** before starting a larger task.
+  </Step>
+</Steps>
+
+<Note>
+Test messages are model requests and may incur charges. Available models, prices and limits are those currently shown in the console. Access to image generation on the web does not automatically grant a key access to every text or video model.
+</Note>
+
+<Frame caption="Preparing an API Key for a client: the empty creation form, shown in Chinese; no key has been created">
+  <img src="/images/create-api-key-zh.png" alt="Empty aibal.ai API Key creation form in the Chinese interface" />
+</Frame>
+
+## Addresses, keys and model IDs
+
+| Field | Value | Common mistake |
+| --- | --- | --- |
+| Codex / OpenAI-compatible Base URL | `https://aibal.ai/v1` | Using the sign-in page URL or adding `/v1` twice |
+| Claude Code `ANTHROPIC_BASE_URL` | `https://aibal.ai` | Appending `/v1/messages`; the client builds the request path |
+| API Key | A key from your account with the required group access | Using a password, verification code or another provider's key |
+| Model | The full model ID supported by the key's configuration | Using a display name or copying another provider's model ID |
+| Protocol | `responses` for Codex; Anthropic-compatible settings for Claude Code | Changing the model name without checking API compatibility |
+
+These are the common endpoints. If **Use Key** provides a group-specific address with an additional path, keep the full address and use that group's configuration.
+
+## What a successful connection looks like
+
+A normal answer in the client, together with a matching timestamp, key and model in console **Usage**, confirms that the request reached your aibal.ai account. Saving settings or starting the client alone does not verify a model call.
+
+## Common questions
+
+### I get 401 or an invalid-key error
+
+Copy the complete key again. Check for surrounding whitespace, whether the environment variable is active in this terminal, and whether the key was deleted or disabled. Never post the key in a public chat or support ticket.
+
+### The model is unavailable or access is denied
+
+Check the key's group, the complete model ID and the client protocol. Use a model from that key's configuration. If the error continues, share the error text, time and client version with support.
+
+### I get 404, 429 or insufficient balance
+
+For `404`, check for a duplicate `/v1`. For `429`, check concurrency or rate limits and reduce request frequency. For balance or quota errors, check your account balance, subscription status and key limit, then follow the error message.
+
+### What should I send to support?
+
+Send the client name and version, time, model ID, a sanitized Base URL and error text. Hide keys, email addresses and account details in screenshots. Disable and replace any exposed key immediately.
+
+## Next steps
+
+Open the [cc-switch](/en/cc-switch), [Codex](/en/codex) or [Claude Code](/en/claude-code) guide. To try creative tools first, use the [web quick start](/en/web-quickstart).
