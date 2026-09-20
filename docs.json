@@ -18,21 +18,35 @@
         "default": true,
         "groups": [
           {
-            "group": "使用指南",
+            "group": "认识 aibal.ai",
             "pages": [
-              "zh/selling-points",
+              "zh/platform-overview",
+              "zh/selling-points"
+            ]
+          },
+          {
+            "group": "快速开始",
+            "pages": [
               "zh/register",
               "zh/recharge",
-              "zh/create-api-key",
-              {
-                "group": "文生视频",
-                "pages": ["zh/text-to-video"]
-              },
-              {
-                "group": "文生图",
-                "pages": ["zh/text-to-image"]
-              },
-              "zh/integrations"
+              "zh/create-api-key"
+            ]
+          },
+          {
+            "group": "AI 创作",
+            "pages": [
+              "zh/text-to-image",
+              "zh/text-to-video",
+              "zh/web-quickstart"
+            ]
+          },
+          {
+            "group": "开发者接入",
+            "pages": [
+              "zh/integrations",
+              "zh/cc-switch",
+              "zh/codex",
+              "zh/claude-code"
             ]
           }
         ]
@@ -41,15 +55,35 @@
         "language": "en",
         "groups": [
           {
-            "group": "User guide",
+            "group": "About aibal.ai",
             "pages": [
-              "en/selling-points",
+              "en/platform-overview",
+              "en/selling-points"
+            ]
+          },
+          {
+            "group": "Getting started",
+            "pages": [
               "en/register",
               "en/recharge",
-              "en/create-api-key",
-              {"group": "Text to video", "pages": ["en/text-to-video"]},
-              {"group": "Text to image", "pages": ["en/text-to-image"]},
-              "en/integrations"
+              "en/create-api-key"
+            ]
+          },
+          {
+            "group": "AI creation",
+            "pages": [
+              "en/text-to-image",
+              "en/text-to-video",
+              "en/web-quickstart"
+            ]
+          },
+          {
+            "group": "Developer integrations",
+            "pages": [
+              "en/integrations",
+              "en/cc-switch",
+              "en/codex",
+              "en/claude-code"
             ]
           }
         ]
@@ -58,15 +92,35 @@
         "language": "ru",
         "groups": [
           {
-            "group": "Руководство пользователя",
+            "group": "О платформе aibal.ai",
             "pages": [
-              "ru/selling-points",
+              "ru/platform-overview",
+              "ru/selling-points"
+            ]
+          },
+          {
+            "group": "Начало работы",
+            "pages": [
               "ru/register",
               "ru/recharge",
-              "ru/create-api-key",
-              {"group": "Текст в видео", "pages": ["ru/text-to-video"]},
-              {"group": "Текст в изображение", "pages": ["ru/text-to-image"]},
-              "ru/integrations"
+              "ru/create-api-key"
+            ]
+          },
+          {
+            "group": "Создание контента",
+            "pages": [
+              "ru/text-to-image",
+              "ru/text-to-video",
+              "ru/web-quickstart"
+            ]
+          },
+          {
+            "group": "Интеграция для разработчиков",
+            "pages": [
+              "ru/integrations",
+              "ru/cc-switch",
+              "ru/codex",
+              "ru/claude-code"
             ]
           }
         ]
