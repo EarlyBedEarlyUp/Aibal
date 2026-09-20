@@ -1,6 +1,83 @@
 ---
-title: "Register"
-description: "Create an aibal.ai account"
+title: "Register an aibal.ai account"
+description: "Complete email verification and open the aibal.ai dashboard"
 ---
 
-Open [aibal.ai](https://aibal.ai), choose **Register**, complete the form and verification, then sign in. After signing in, review available groups, models, limits, and billing rules before creating a key.
+Create an aibal.ai account with your email address. After registration, you can review the services, models, and billing rules currently available in the dashboard.
+
+<Frame caption="The aibal.ai registration page (Chinese interface shown)">
+  <img src="/images/register-zh.png" alt="The aibal.ai registration page with email, password, confirmation, invitation code, and promo code fields" />
+</Frame>
+
+## Before you start
+
+- Use an email address that can receive messages. The verification code is sent there.
+- Your password must contain at least 6 characters. Use a password that you do not reuse elsewhere.
+- Invitation and promo codes are optional when the fields are shown.
+
+## Registration steps
+
+<Steps>
+  <Step title="Open the registration page">
+    Open [aibal.ai](https://aibal.ai), click **Get started**, and then choose **Register** on the sign-in page.
+
+    You can also open the [registration page](https://aibal.ai/register) directly.
+  </Step>
+  <Step title="Enter your email">
+    Enter an address you can access in the **Email** field. Check the spelling before continuing.
+  </Step>
+  <Step title="Create and confirm a password">
+    Enter a password with at least 6 characters, then enter it again in **Confirm password**. The two values must match.
+
+    Select the eye icon to check the value you entered.
+  </Step>
+  <Step title="Add optional codes">
+    Enter an **Invitation code** or **Promo code** if you have one. Leave these fields empty when you do not have a code.
+  </Step>
+  <Step title="Send the verification email">
+    Click **Continue**. aibal.ai sends a verification code to your email and opens the verification page.
+
+    If the page reports that registration is unavailable, your email domain is not supported, or a code is invalid, follow the message on the page.
+  </Step>
+  <Step title="Verify your email">
+    Open the message from aibal.ai, copy the 6-digit code, and enter it on the verification page.
+
+    Click **Verify and create account**. If the message does not arrive, check your spam folder and use **Resend code**.
+  </Step>
+  <Step title="Open the dashboard">
+    After verification, aibal.ai creates the account and opens the dashboard. Review the available groups, models, balance, and billing rules before making a request.
+  </Step>
+</Steps>
+
+## Field reference
+
+| Field | Required | Description |
+| --- | --- | --- |
+| Email | Yes | Receives verification codes and account notices |
+| Password | Yes | At least 6 characters |
+| Confirm password | Yes | Re-enter the same password |
+| Invitation code | No | Use when you have an invitation |
+| Promo code | No | Use when you have a valid promotion |
+
+## After registration
+
+1. Confirm that your email can receive account notices.
+2. Review your balance, available plans, and models in the dashboard.
+3. Read the limits, validity period, and billing rules for the selected group.
+4. Follow [Create an API Key](/en/create-api-key) to create a key for API calls.
+
+Registration does not create an API key or select a service plan for you. Follow the separate recharge and API key guides when you are ready.
+
+## Troubleshooting
+
+### I did not receive the verification code
+
+Check your spam or filtered-mail folders and confirm that the email address is correct. After a short wait, select **Resend code**. Avoid clicking the resend control repeatedly.
+
+### Can I add an invitation or promo code later?
+
+Follow the rules shown on the registration page and for the current promotion. If you need to use a code, enter it before selecting **Continue**.
+
+### What should I do after registration?
+
+Review your available group and balance, then create an API key. Never share your password, email verification code, or API key in screenshots, repositories, or chats.
