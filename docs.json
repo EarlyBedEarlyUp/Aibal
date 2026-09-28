@@ -16,10 +16,24 @@
       {
         "language": "zh",
         "default": true,
+        "navbar": {
+          "links": [
+            {
+              "label": "打开 aibal.ai 控制台",
+              "href": "https://aibal.ai"
+            }
+          ],
+          "primary": {
+            "type": "button",
+            "label": "进入控制台",
+            "href": "https://aibal.ai"
+          }
+        },
         "groups": [
           {
             "group": "认识 aibal.ai",
             "pages": [
+              "zh/index",
               "zh/platform-overview",
               "zh/selling-points"
             ]
@@ -53,10 +67,24 @@
       },
       {
         "language": "en",
+        "navbar": {
+          "links": [
+            {
+              "label": "Open aibal.ai console",
+              "href": "https://aibal.ai"
+            }
+          ],
+          "primary": {
+            "type": "button",
+            "label": "Open console",
+            "href": "https://aibal.ai"
+          }
+        },
         "groups": [
           {
             "group": "About aibal.ai",
             "pages": [
+              "en/index",
               "en/platform-overview",
               "en/selling-points"
             ]
@@ -90,10 +118,24 @@
       },
       {
         "language": "ru",
+        "navbar": {
+          "links": [
+            {
+              "label": "Открыть консоль aibal.ai",
+              "href": "https://aibal.ai"
+            }
+          ],
+          "primary": {
+            "type": "button",
+            "label": "Открыть консоль",
+            "href": "https://aibal.ai"
+          }
+        },
         "groups": [
           {
             "group": "О платформе aibal.ai",
             "pages": [
+              "ru/index",
               "ru/platform-overview",
               "ru/selling-points"
             ]
@@ -133,19 +175,6 @@
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "打开 aibal.ai 控制台",
-        "href": "https://aibal.ai"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "进入控制台",
-      "href": "https://aibal.ai"
-    }
   },
   "contextual": {
     "options": [
